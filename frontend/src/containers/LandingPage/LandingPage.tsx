@@ -12,10 +12,12 @@ import { Pages } from 'utils/routes';
 import { pageMotionProps } from 'utils/styles/animations';
 
 import * as Styled from './LandingPage.styles';
+import { initial } from 'lodash';
+import { useCopyStore } from 'store';
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
     try {
-        const initialCopy = await getCopy(Pages.index, locale);
+        const initialCopy = await getCopy(Pages.landing, locale);
 
         const props: Omit<LandingPageProps, 'router'> = {
             initialCopy,
@@ -43,12 +45,17 @@ interface LandingPageProps {
 }
 
 const LandingPage: React.FunctionComponent<LandingPageProps> = () => {
+    const { copy } = useCopyStore();
     // TODO: replace placeholder
     const isReady = false;
-
     return (
         <motion.div {...pageMotionProps}>
             <Styled.Wrapper>
+                <h1
+                    dangerouslySetInnerHTML={{
+                        __html: copy.landing.title,
+                    }}
+                />
                 <LoadingScreen isVisible={!isReady} />
             </Styled.Wrapper>
         </motion.div>

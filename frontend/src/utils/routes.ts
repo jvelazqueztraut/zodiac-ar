@@ -5,7 +5,7 @@ export const ROUTES = {
 } as const;
 
 export enum Pages {
-  index = 'index',
+  landing = 'landing',
   about = 'about',
   notFound = 'notFound',
 }
