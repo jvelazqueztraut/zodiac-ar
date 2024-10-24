@@ -1,0 +1,15 @@
+import React from 'react';
+
+import * as Styled from './{{pascal}}.styles';
+
+export interface {{pascal}}Props {}
+
+const defaultProps: Partial<{{pascal}}Props> = {};
+
+const {{pascal}}: React.FC<{{pascal}}Props> = () => {
+  return <Styled.Wrapper>{{pascal}}</Styled.Wrapper>;
+};
+
+{{pascal}}.defaultProps = defaultProps;
+
+export default {{pascal}};

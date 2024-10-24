@@ -1,0 +1,113 @@
+image: jvt/base-web-pipelines
+
+options:
+  docker: true
+
+clone:
+  lfs: true
+
+pipelines:
+  branches:
+    develop:
+      - step:
+          name: Development deployment
+          deployment: development
+          caches:
+            - docker
+            - node-modules-cms
+          script:
+            - export ENV=$BITBUCKET_DEPLOYMENT_ENVIRONMENT
+            - ./bitbucket-pipelines-prepare.sh
+            - ./bitbucket-pipelines-run.sh cms
+            - ./bitbucket-pipelines-run.sh frontend
+    master:
+      - step:
+          name: Test deployment
+          deployment: test
+          caches:
+            - docker
+            - node-modules-cms
+          script:
+            - export ENV=$BITBUCKET_DEPLOYMENT_ENVIRONMENT
+            - ./bitbucket-pipelines-prepare.sh
+            - ./bitbucket-pipelines-run.sh cms
+            - ./bitbucket-pipelines-run.sh frontend
+      - step:
+          name: Staging deployment
+          deployment: staging
+          trigger: manual
+          caches:
+            - docker
+            - node-modules-cms
+          script:
+            - export ENV=$BITBUCKET_DEPLOYMENT_ENVIRONMENT
+            - ./bitbucket-pipelines-prepare.sh
+            - ./bitbucket-pipelines-run.sh cms
+            - ./bitbucket-pipelines-run.sh frontend
+      - step:
+          name: Production deployment
+          deployment: production
+          trigger: manual
+          caches:
+            - docker
+            - node-modules-cms
+          script:
+            - export ENV=$BITBUCKET_DEPLOYMENT_ENVIRONMENT
+            - ./bitbucket-pipelines-prepare.sh
+            - ./bitbucket-pipelines-run.sh cms
+            - ./bitbucket-pipelines-run.sh frontend
+
+  custom:
+    db-update-development:
+      - step:
+          name: Development redeployment after DB update
+          deployment: development
+          caches:
+            - docker
+            - node-modules-cms
+          script:
+            - export ENV=development
+            - ./bitbucket-pipelines-prepare.sh
+            - ./bitbucket-pipelines-run.sh frontend force
+    db-update-test:
+      - step:
+          name: Test redeployment after DB update
+          deployment: test
+          caches:
+            - docker
+            - node-modules-cms
+          script:
+            - export ENV=test
+            - ./bitbucket-pipelines-prepare.sh
+            - ./bitbucket-pipelines-run.sh frontend force
+    db-update-staging:
+      - step:
+          name: Staging redeployment after DB update
+          deployment: staging
+          caches:
+            - docker
+            - node-modules-cms
+          script:
+            - export ENV=staging
+            - ./bitbucket-pipelines-prepare.sh
+            - ./bitbucket-pipelines-run.sh frontend force
+    db-update-production:
+      - step:
+          name: Production redeployment after DB update
+          deployment: production
+          caches:
+            - docker
+            - node-modules-cms
+          script:
+            - export ENV=production
+            - ./bitbucket-pipelines-prepare.sh
+            - ./bitbucket-pipelines-run.sh frontend force
+
+definitions:
+  caches:
+    node-modules-cms: cms/node_modules
+    node-modules-frontend: frontend/node_modules
+
+  services:
+    docker:
+      memory: 3072

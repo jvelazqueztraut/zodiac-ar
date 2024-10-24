@@ -1,0 +1,4 @@
+.next
+.storybook
+node_modules
+**/*.stories.*

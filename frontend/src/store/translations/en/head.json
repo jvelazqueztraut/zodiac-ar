@@ -1,0 +1,17 @@
+{
+  "index": {
+    "title": "JVT Base Web",
+    "description": "This is a demo index page of JVT's Base Web project.",
+    "ogImage": { "url": "" }
+  },
+  "about": {
+    "title": "About | JVT Base Web",
+    "description": "This is an about page.",
+    "ogImage": { "url": "" }
+  },
+  "notFound": {
+    "title": "Not Found | JVT Base Web",
+    "description": "This is a 404 page of JVT's Base Web project.",
+    "ogImage": { "url": "" }
+  }
+}

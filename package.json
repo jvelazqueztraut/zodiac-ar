@@ -1,0 +1,30 @@
+{
+  "name": "base-web",
+  "version": "4.5.0",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "start": "pm2 start ecosystem.config.js && pm2 logs",
+    "stop": "pm2 stop ecosystem.config.js",
+    "setup": "node ./setup/index.js",
+    "lint:frontend": "npm run lint --prefix frontend"
+  },
+  "pre-commit": [
+    "lint:frontend"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/jvelazqueztraut/zodiac-ar.git"
+  },
+  "author": "Javier Velazquez Traut",
+  "license": "ISC",
+  "homepage": "https://github.com/jvelazqueztraut/zodiac-ar#readme",
+  "dependencies": {
+    "inquirer": "^7.3.3"
+  },
+  "devDependencies": {
+    "pre-commit": "^1.2.2"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "index": {
+    "title": "JVT Base Web",
+    "description": "To jest demonstracyjna strona główna projektu JVT Base Web.",
+    "ogImage": { "url": "" }
+  },
+  "about": {
+    "title": "O projekcie | JVT Base Web",
+    "description": "To jest strona o projekcie.",
+    "ogImage": { "url": "" }
+  },
+  "notFound": {
+    "title": "Not Found | JVT Base Web",
+    "description": "This is a 404 page of JVT's Base Web project.",
+    "ogImage": { "url": "" }
+  }
+}

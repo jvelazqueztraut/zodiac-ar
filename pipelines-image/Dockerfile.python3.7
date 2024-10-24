@@ -1,0 +1,43 @@
+FROM python:3.7-buster
+
+# Install nodejs and yarn
+# Ref: https://github.com/nodesource/distributions/blob/master/README.md#manual-installation
+# Ref: https://classic.yarnpkg.com/en/docs/install/#debian-stable
+RUN \
+  echo "deb https://deb.nodesource.com/node_12.x buster main" > /etc/apt/sources.list.d/nodesource.list && \
+  wget -qO- https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - && \
+  echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list && \
+  wget -qO- https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+  apt-get update && \
+  apt-get install -yqq nodejs yarn && \
+  npm i -g npm@^6
+
+# Install n (run as needed in each project bitbucket-pipelines.yml)
+RUN npm install -g n
+
+# Install gcloud SDK
+RUN curl https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz > /tmp/google-cloud-sdk.tar.gz
+RUN mkdir -p /usr/local/gcloud \
+  && tar -C /usr/local/gcloud -xvf /tmp/google-cloud-sdk.tar.gz \
+  && /usr/local/gcloud/google-cloud-sdk/install.sh
+ENV PATH $PATH:/usr/local/gcloud/google-cloud-sdk/bin
+
+# Install kubectl
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+RUN chmod +x ./kubectl
+RUN mv ./kubectl /usr/local/bin/kubectl
+
+# Install Git (pip clone from repo support)
+RUN apt-get install -yqq git
+
+# Install AWS CLI and EB deployment support
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+RUN unzip awscliv2.zip
+RUN ./aws/install
+RUN apt-get install -yqq zip unzip
+
+# envsubst
+RUN apt-get install -yqq gettext-base
+
+# bitbucket-pipelines-run.sh dependencies
+RUN apt-get install -y jq
