@@ -11,13 +11,13 @@ import { ISR_TIMEOUT } from 'utils/config';
 import { Pages } from 'utils/routes';
 import { pageMotionProps } from 'utils/styles/animations';
 
-import * as Styled from './SplashPage.styles';
+import * as Styled from './LandingPage.styles';
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
     try {
         const initialCopy = await getCopy(Pages.index, locale);
 
-        const props: Omit<SplashPageProps, 'router'> = {
+        const props: Omit<LandingPageProps, 'router'> = {
             initialCopy,
         };
 
@@ -27,14 +27,14 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
         };
     } catch (error) {
         Sentry.captureException(error);
-        console.log('SplashPage -- getStaticProps -- error:', error);
+        console.log('LandingPage -- getStaticProps -- error:', error);
 
         if (process.env.ENV !== 'local') throw new Error(error);
         return { notFound: true };
     }
 };
 
-interface SplashPageProps {
+interface LandingPageProps {
     initialCopy: {
         head: CopyStoreType['copy']['head'];
         global: CopyStoreType['copy']['global'];
@@ -42,7 +42,7 @@ interface SplashPageProps {
     router: Router;
 }
 
-const SplashPage: React.FunctionComponent<SplashPageProps> = () => {
+const LandingPage: React.FunctionComponent<LandingPageProps> = () => {
     // TODO: replace placeholder
     const isReady = false;
 
@@ -55,4 +55,4 @@ const SplashPage: React.FunctionComponent<SplashPageProps> = () => {
     );
 };
 
-export default SplashPage;
+export default LandingPage;

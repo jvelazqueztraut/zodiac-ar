@@ -1,4 +1,4 @@
 export {
   default,
   getStaticProps,
-} from 'containers/SplashPage/SplashPage';
+} from 'containers/LandingPage/LandingPage';
