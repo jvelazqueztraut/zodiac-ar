@@ -5,7 +5,7 @@ import { setTypography, setVh } from 'utils/styles/mixins';
 import { mediaMobileSmallHeight } from 'utils/styles/responsive';
 
 export const Wrapper = styled.div`
-  position: fixed;
+  position: relative;
   height: ${setVh(100)};
   overflow-x: hidden;
   overflow-y: scroll;
