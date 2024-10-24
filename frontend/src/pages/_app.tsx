@@ -81,7 +81,7 @@ const App = ({ Component, pageProps, router }: AppProps) => {
           {process.env.IS_DEBUG && <Version />}
           {isMounted
             ? process.env.IS_DEBUG &&
-            window.location.hash === '#buildInfo' && <BuildInfo />
+              window.location.hash === '#buildInfo' && <BuildInfo />
             : null}
         </MotionConfig>
       </ThemeProvider>

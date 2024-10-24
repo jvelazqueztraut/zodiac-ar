@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { rgba } from 'polished';
 import styled from 'styled-components';
+
 import { setVh } from 'utils/styles/mixins';
 import { colors } from 'utils/styles/theme';
 export const Wrapper = styled(motion.div)`

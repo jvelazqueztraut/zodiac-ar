@@ -4,9 +4,9 @@ import { Pages } from 'utils/routes';
 
 import { CopyStoreType } from './copy.types';
 import demoAboutPageEN from './translations/en/demoAboutPage.json';
-import landingPageEN from './translations/en/landingPage.json';
 import globalEN from './translations/en/global.json';
 import headEN from './translations/en/head.json';
+import landingPageEN from './translations/en/landingPage.json';
 
 const TRANSLATIONS_PATH = './translations';
 
