@@ -7,18 +7,18 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { ThemeProvider } from 'styled-components';
 
 import { setupStoreDevTools, useCopyStore } from 'store';
-import { ROUTES } from 'utils/routes';
-import customFonts from 'utils/styles/fonts';
-import GlobalStyles from 'utils/styles/globalStyles';
-import theme from 'utils/styles/theme';
-
-import 'intersection-observer';
 import ErrorBoundary from 'template/components/ErrorBoundary/ErrorBoundary';
 import Head from 'template/components/Head/Head';
 import LanguageSelector from 'template/components/LanguageSelector/LanguageSelector';
 import BuildInfo from 'template/components/versioning/BuildInfo/BuildInfo';
 import Version from 'template/components/versioning/Version/Version';
 import NonFunctionals from 'template/containers/NonFunctionals/NonFunctionals';
+import { ROUTES } from 'utils/routes';
+import customFonts from 'utils/styles/fonts';
+import GlobalStyles from 'utils/styles/globalStyles';
+import theme from 'utils/styles/theme';
+
+import 'intersection-observer';
 
 if (process.env.ENV !== 'local') {
   Sentry.init({

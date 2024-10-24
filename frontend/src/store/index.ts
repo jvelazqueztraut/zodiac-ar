@@ -1,11 +1,11 @@
 import { mountStoreDevtool } from 'simple-zustand-devtools';
 import { StoreApi, UseBoundStore } from 'zustand';
 
-import useCopyStore from './copy';
-import useGlobalStore from './global';
-
 import { isBrowser } from 'template/utils/platform';
 import { getUrlParams } from 'template/utils/url';
+
+import useCopyStore from './copy';
+import useGlobalStore from './global';
 
 const addStoreDevtool = (
   name: string,

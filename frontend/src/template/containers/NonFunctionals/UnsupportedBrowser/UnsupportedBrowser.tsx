@@ -1,11 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { useCopyStore } from 'store';
+import { isDesktop } from 'template/utils/platform';
 
 import * as NonFunctionalsStyles from '../NonFunctionals.styles';
 import * as Styled from './UnsupportedBrowser.styles';
-
-import { isDesktop } from 'template/utils/platform';
 
 interface UnsupportedBrowserProps {
   setAccept(state: boolean): void;

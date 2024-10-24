@@ -1,11 +1,11 @@
 import gsap from 'gsap';
 import { PannerAttributes } from 'howler';
 
+import { isStorybook } from 'template/utils/platform';
+
 import AudioManager, { clearTween } from '../audioManager.service';
 import { ListenerOrientation, SoundData, Vector3 } from '../audioManager.types';
 import Sound from './sound';
-
-import { isStorybook } from 'template/utils/platform';
 
 const IS_DEBUG = isStorybook() || (process.env.IS_DEBUG && false);
 

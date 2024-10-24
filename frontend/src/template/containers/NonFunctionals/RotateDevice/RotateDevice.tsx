@@ -2,11 +2,10 @@ import { AnimatePresence } from 'framer-motion';
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { useCopyStore } from 'store';
+import { isTablet } from 'template/utils/platform';
 
 import * as NonFunctionalsStyles from '../NonFunctionals.styles';
 import * as Styled from './RotateDevice.styles';
-
-import { isTablet } from 'template/utils/platform';
 
 export interface RotateDeviceProps {
   isVisible?: boolean;

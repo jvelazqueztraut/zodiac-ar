@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 
+import { useTouch } from 'template/hooks';
+
 import { SOUNDS_DATA, SoundType } from './audioManager.data';
 import AudioManager from './audioManager.service';
 import { RoundRobin, SoundData, Vector3 } from './audioManager.types';
-
-import { useTouch } from 'template/hooks';
 
 export default {
   title: 'Audio',

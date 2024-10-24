@@ -7,6 +7,16 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useCopyStore, useGlobalStore } from 'store';
 import { getCopy } from 'store/copy.data';
 import { CopyStoreType } from 'store/copy.types';
+import useWindowSize from 'template/hooks/useWindowSize';
+import {
+  ALLOWED_BROWSERS,
+  hasWebGl,
+  isDesktop,
+  isMobile,
+  isStorybook,
+  isSupportedBrowser,
+  isTablet,
+} from 'template/utils/platform';
 // import { cmsApiClient } from 'utils/cms/api';
 // import { notFoundPageQuery } from 'utils/cms/gql';
 import { ISR_TIMEOUT } from 'utils/config';
@@ -23,17 +33,6 @@ import UnsupportedBrowser from './UnsupportedBrowser/UnsupportedBrowser';
 import UnsupportedBanner from './UnsupportedBrowserBanner/UnsupportedBrowserBanner';
 import WebGLDisabled from './WebGLDisabled/WebGLDisabled';
 import WindowTooSmall from './WindowTooSmall/WindowTooSmall';
-
-import useWindowSize from 'template/hooks/useWindowSize';
-import {
-  ALLOWED_BROWSERS,
-  hasWebGl,
-  isDesktop,
-  isMobile,
-  isStorybook,
-  isSupportedBrowser,
-  isTablet,
-} from 'template/utils/platform';
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   try {

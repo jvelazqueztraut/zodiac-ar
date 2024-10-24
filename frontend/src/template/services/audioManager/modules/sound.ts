@@ -1,12 +1,12 @@
 import gsap from 'gsap';
 import { Howl, PannerAttributes, SpatialPosition } from 'howler';
 
+import PreloaderService from 'template/services/preloader.service';
+import { isStorybook } from 'template/utils/platform';
+
 import { DEFAULT_SOUND_CONFIG } from '../audioManager.data';
 import { clearTween } from '../audioManager.service';
 import { SoundConfig, SoundData, Vector3 } from '../audioManager.types';
-
-import PreloaderService from 'template/services/preloader.service';
-import { isStorybook } from 'template/utils/platform';
 
 const IS_DEBUG = isStorybook() || (process.env.IS_DEBUG && false);
 

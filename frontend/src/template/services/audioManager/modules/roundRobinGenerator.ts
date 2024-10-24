@@ -1,9 +1,9 @@
+import { isStorybook } from 'template/utils/platform';
+
 import { DEFAULT_ROUND_ROBIN_CONFIG } from '../audioManager.data';
 import AudioManager from '../audioManager.service';
 import { RoundRobin, RoundRobinConfig } from '../audioManager.types';
 import Sound from './sound';
-
-import { isStorybook } from 'template/utils/platform';
 
 const IS_DEBUG = isStorybook() || (process.env.IS_DEBUG && false);
 

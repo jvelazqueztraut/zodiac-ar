@@ -2,10 +2,9 @@ import NextHead from 'next/head';
 import { useRouter } from 'next/router';
 import React, { useEffect, useMemo, useState } from 'react';
 
-import { colors } from 'utils/styles/theme';
-
 import useWindowSize from 'template/hooks/useWindowSize';
 import { isAndroid, isInputFocused } from 'template/utils/platform';
+import { colors } from 'utils/styles/theme';
 
 export interface HeadProps {
   title: string;

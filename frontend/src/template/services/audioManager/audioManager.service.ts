@@ -1,6 +1,10 @@
 import gsap from 'gsap';
 import { Howler } from 'howler';
 
+import EventManager from 'template/services/eventManager.service';
+import { addEventListeners, removeEventListeners } from 'template/utils/dom';
+import { isStorybook } from 'template/utils/platform';
+
 import {
   DEFAULT_FADE_DURATION,
   DEFAULT_SOUND_CONFIG,
@@ -16,10 +20,6 @@ import {
 import RoundRobinGenerator from './modules/roundRobinGenerator';
 import Sound from './modules/sound';
 import SpatialAudio from './modules/spatialAudio';
-
-import EventManager from 'template/services/eventManager.service';
-import { addEventListeners, removeEventListeners } from 'template/utils/dom';
-import { isStorybook } from 'template/utils/platform';
 
 export const clearTween = (tween: gsap.core.Tween) => {
   if (tween) {

@@ -1,9 +1,9 @@
 import { css, FlattenInterpolation, ThemeProps } from 'styled-components';
 
-import * as VARS from './vars';
-
 import { getViewportInfo } from 'template/utils/dom';
 import { isBrowser, isDesktop, isIOS, isMobile } from 'template/utils/platform';
+
+import * as VARS from './vars';
 
 export type MediaContent = string | FlattenInterpolation<ThemeProps<any>>;
 

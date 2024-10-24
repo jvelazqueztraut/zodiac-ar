@@ -7,6 +7,7 @@ import SfxWolfGrowl4 from 'assets/sounds/sfx/wolfGrowl4.mp3';
 import SfxWolfGrowl5 from 'assets/sounds/sfx/wolfGrowl5.mp3';
 import SfxWolfGrowl6 from 'assets/sounds/sfx/wolfGrowl6.mp3';
 import SfxWolfHowls from 'assets/sounds/sfx/wolfHowls.mp3';
+import { timecodeToMilliseconds } from 'template/utils/time';
 
 import {
   RoundRobinConfig,
@@ -15,8 +16,6 @@ import {
   SoundDataDictionary,
   SoundDataSettings,
 } from './audioManager.types';
-
-import { timecodeToMilliseconds } from 'template/utils/time';
 
 export const getSpriteTimes = (
   [start, end]: [string, string],
