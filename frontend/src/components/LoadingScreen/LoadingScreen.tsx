@@ -17,10 +17,12 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
   isVisible,
   setIsReady,
 }) => {
-  setTimeout(() => {
+  const LOADING_DURATION = 2000;
+  const timeoutRef = setTimeout(() => {
     console.log('Fake loading for 2 seconds.');
     setIsReady(true);
-  }, 2000);
+    clearTimeout(timeoutRef);
+  }, LOADING_DURATION);
 
   return (
     <AnimatePresence>
