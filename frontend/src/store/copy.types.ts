@@ -65,6 +65,8 @@ export interface SharedCopy {
 
 export interface LandingPageCopy {
   title: string;
+  subTitle: string;
+  cta: string;
 }
 
 export interface DemoAboutPageCopy {

@@ -26,6 +26,17 @@ export const pageMotionProps = {
   transition: { duration: 0.2 }
 };
 
+export const landingPageHeaderMotionProps = {
+  initial: { y: '40%', opacity: 0 },
+  animate: { y: '0%', opacity: 1 },
+  transition: { duration: 0.8, ease: 'easeInOut', delay: 0.5 },
+};
+
+export const landingPageStartButtonMotionProps = {
+  ...landingPageHeaderMotionProps,
+  transition: { ...landingPageHeaderMotionProps.transition, delay: 1 },
+};
+
 export const getBannerMotionProps = (from: 'top' | 'bottom') => ({
   initial: { opacity: 0, y: `${(from === 'top' ? -1 : 1) * 50}%` },
   animate: { opacity: 1, y: '0%' },

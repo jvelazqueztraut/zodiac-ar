@@ -15,8 +15,7 @@ export const Wrapper = styled(motion.div)`
   align-items: center;
   top: 0;
   left: 0;
-  svg {
-    width: 200rem;
-    height: 200rem;
+  img {
+    width: 90%;
   }
 `;

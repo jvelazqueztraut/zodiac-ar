@@ -1,16 +1,22 @@
 import * as Sentry from '@sentry/react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { GetStaticProps } from 'next';
-import { Router } from 'next/router';
+import router, { Router } from 'next/router';
 import React, { useState } from 'react';
 
+import Button from 'components/Button/Button';
 import LoadingScreen from 'components/LoadingScreen/LoadingScreen';
 import { useCopyStore } from 'store';
 import { getCopy } from 'store/copy.data';
 import { CopyStoreType } from 'store/copy.types';
 import { ISR_TIMEOUT } from 'utils/config';
-import { Pages } from 'utils/routes';
-import { pageMotionProps } from 'utils/styles/animations';
+import { SPRITES } from 'utils/config.assets';
+import { Pages, ROUTES } from 'utils/routes';
+import {
+  landingPageHeaderMotionProps,
+  landingPageStartButtonMotionProps,
+  pageMotionProps,
+} from 'utils/styles/animations';
 
 import * as Styled from './LandingPage.styles';
 
@@ -51,13 +57,38 @@ const LandingPage: React.FunctionComponent<LandingPageProps> = () => {
     <motion.div {...pageMotionProps}>
       <Styled.Wrapper>
         <LoadingScreen isVisible={!isReady} setIsReady={setIsReady} />
-        {isReady && (
-          <h1
-            dangerouslySetInnerHTML={{
-              __html: copy.landing.title,
-            }}
-          />
-        )}
+
+        <AnimatePresence>
+          {isReady && (
+            <motion.div {...pageMotionProps}>
+              <Styled.WrapperInner>
+                <Styled.Logo>
+                  <img src={SPRITES.ZodiacLogo} alt="ZodiacAR logo" />
+                </Styled.Logo>
+                <Styled.Header {...landingPageHeaderMotionProps}>
+                  <h1
+                    dangerouslySetInnerHTML={{
+                      __html: copy.landing.title,
+                    }}
+                  />
+                  <h2
+                    dangerouslySetInnerHTML={{
+                      __html: copy.landing.subTitle,
+                    }}
+                  />
+                </Styled.Header>
+                <motion.div {...landingPageStartButtonMotionProps}>
+                  <Button
+                    label={copy.landing.cta}
+                    onClick={() => {
+                      router.push(ROUTES.ABOUT, null, { scroll: false });
+                    }}
+                  />
+                </motion.div>
+              </Styled.WrapperInner>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </Styled.Wrapper>
     </motion.div>
   );
