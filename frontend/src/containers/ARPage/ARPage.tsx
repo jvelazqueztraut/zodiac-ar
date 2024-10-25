@@ -2,10 +2,10 @@ import * as Sentry from '@sentry/react';
 import { motion } from 'framer-motion';
 import { GetStaticProps } from 'next';
 import { Router } from 'next/router';
-import React from 'react';
+import React, { useRef } from 'react';
 
 import Button from 'components/Button/Button';
-import FaceTracker from 'components/FaceTracker/FaceTracker';
+import FaceTracker, { CanCapture } from 'components/FaceTracker/FaceTracker';
 import { getCopy } from 'store/copy.data';
 import { CopyStoreType } from 'store/copy.types';
 import { ISR_TIMEOUT } from 'utils/config';
@@ -43,15 +43,15 @@ interface ARPageProps {
 }
 
 const ARPage: React.FunctionComponent<ARPageProps> = ({ initialCopy }) => {
+  const faceTrackerRef = useRef<CanCapture>(null);
+
   return (
     <motion.div {...pageMotionProps}>
       <Styled.Wrapper>
-        <FaceTracker isVisible={true} />
+        <FaceTracker ref={faceTrackerRef} isVisible={true} />
         <Button
           label={initialCopy.ar.cta}
-          onClick={() => {
-            // TODO
-          }}
+          onClick={faceTrackerRef.current?.capture}
         />
       </Styled.Wrapper>
     </motion.div>
