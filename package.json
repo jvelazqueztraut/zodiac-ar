@@ -9,7 +9,8 @@
     "start": "pm2 start ecosystem.config.js && pm2 logs",
     "stop": "pm2 stop ecosystem.config.js",
     "setup": "node ./setup/index.js",
-    "lint:frontend": "npm run lint --prefix frontend"
+    "lint:frontend": "npm run lint --prefix frontend",
+    "lint:fix": "npm run fix --prefix frontend"
   },
   "pre-commit": [
     "lint:frontend"

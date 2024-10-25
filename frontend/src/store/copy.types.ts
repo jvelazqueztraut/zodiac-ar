@@ -4,7 +4,8 @@ export interface CopyStoreType {
   copy: {
     head: HeadProps;
     global: GlobalCopy;
-    index: DemoIndexPageCopy;
+    landing: LandingPageCopy;
+    ar: ARPageCopy;
     about: DemoAboutPageCopy;
   };
   setCopy(patch: Partial<CopyStoreType['copy']>): void;
@@ -63,11 +64,16 @@ export interface SharedCopy {
   global: GlobalCopy;
 }
 
-export interface DemoIndexPageCopy {
+export interface LandingPageCopy {
   title: string;
-  description: string;
-  aboutLinkLabel: string;
-  aboutLinkDescription: string;
+  subTitle: string;
+  cta: string;
+}
+
+export interface ARPageCopy {
+  title: string;
+  body: string;
+  cta: string;
 }
 
 export interface DemoAboutPageCopy {

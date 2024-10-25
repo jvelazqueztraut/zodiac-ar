@@ -1,16 +1,16 @@
 {
-  "index": {
-    "title": "JVT Base Web",
-    "description": "This is a demo index page of JVT's Base Web project.",
+  "landing": {
+    "title": "Zodiac AR",
+    "description": "Web AR prototype",
     "ogImage": { "url": "" }
   },
   "about": {
-    "title": "About | JVT Base Web",
+    "title": "About | Zodiac AR",
     "description": "This is an about page.",
     "ogImage": { "url": "" }
   },
   "notFound": {
-    "title": "Not Found | JVT Base Web",
+    "title": "Not Found | Zodiac AR",
     "description": "This is a 404 page of JVT's Base Web project.",
     "ogImage": { "url": "" }
   }

@@ -9,7 +9,6 @@ import { ThemeProvider } from 'styled-components';
 import { setupStoreDevTools, useCopyStore } from 'store';
 import ErrorBoundary from 'template/components/ErrorBoundary/ErrorBoundary';
 import Head from 'template/components/Head/Head';
-import LanguageSelector from 'template/components/LanguageSelector/LanguageSelector';
 import BuildInfo from 'template/components/versioning/BuildInfo/BuildInfo';
 import Version from 'template/components/versioning/Version/Version';
 import NonFunctionals from 'template/containers/NonFunctionals/NonFunctionals';
@@ -64,7 +63,6 @@ const App = ({ Component, pageProps, router }: AppProps) => {
               : {})}
           >
             <Head {...(pageProps.initialCopy || copy).head} />
-            <LanguageSelector />
 
             <NonFunctionals
               // If the non-functionals are the page component, pass the initial copy

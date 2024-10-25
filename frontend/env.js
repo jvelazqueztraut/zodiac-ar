@@ -23,7 +23,7 @@ Object.keys(ciEnv).forEach(key => {
 const ENV = ciEnv.ENV || ciEnv.NODE_ENV || process.env.NODE_ENV || 'local';
 const IS_DEBUG = !['staging', 'production'].includes(ENV);
 const DEFAULT_LOCALE = 'en';
-const LOCAL_HTTPS = false;
+const LOCAL_HTTPS = true;
 const LOCAL_PORT = +(ciEnv.PORT || process.env.PORT || 3000);
 const PUBLIC_URL =
   ciEnv.PUBLIC_URL ||
@@ -55,7 +55,7 @@ const DEFAULT_ENV = {
   USE_LINEAR_SCALING: false,
 
   DEFAULT_LOCALE,
-  LOCALES: [DEFAULT_LOCALE, 'pl'],
+  LOCALES: [DEFAULT_LOCALE],
   USE_BROWSER_LOCALE: true,
   USE_GEOIP_LOCALE: false,
   GEOIP_MAPPING: {},

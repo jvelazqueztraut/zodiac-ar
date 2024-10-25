@@ -10,5 +10,6 @@
   "[typescriptreact]": {
     "editor.formatOnSave": true
   },
-  "shellcheck.enableQuickFix": true
+  "shellcheck.enableQuickFix": true,
+  "editor.tabSize": 2
 }

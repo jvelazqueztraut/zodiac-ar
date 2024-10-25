@@ -10,7 +10,7 @@ const useCopyStore = create<CopyStoreType>(
     set: (partial: (store: CopyStoreType) => Partial<CopyStoreType>) => void
   ) => {
     return {
-      copy: getCopy(Pages.index, process.env.DEFAULT_LOCALE),
+      copy: getCopy(Pages.landing, process.env.DEFAULT_LOCALE),
 
       setCopy: patch => {
         set(({ copy }) => ({

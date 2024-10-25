@@ -1,4 +1,1 @@
-export {
-  default,
-  getStaticProps,
-} from 'template/containers/DemoIndexPage/DemoIndexPage';
+export { default, getStaticProps } from 'containers/LandingPage/LandingPage';
