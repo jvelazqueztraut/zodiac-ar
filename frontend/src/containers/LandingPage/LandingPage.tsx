@@ -81,7 +81,7 @@ const LandingPage: React.FunctionComponent<LandingPageProps> = () => {
                   <Button
                     label={copy.landing.cta}
                     onClick={() => {
-                      router.push(ROUTES.ABOUT, null, { scroll: false });
+                      router.push(ROUTES.AR, null, { scroll: false });
                     }}
                   />
                 </motion.div>
