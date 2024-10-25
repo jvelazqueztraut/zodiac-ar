@@ -1,8 +1,11 @@
+import { InputImage, NormalizedLandmarkList } from '@mediapipe/face_mesh';
 import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
 import { AnimatePresence } from 'framer-motion';
 import React, { useEffect, useRef, useState } from 'react';
 
+import { transformLandmarks } from 'utils/facemesh/landmarks_helpers';
 import { fadeMotionProps } from 'utils/styles/animations';
+import SceneManager from 'utils/three_components/scene_manager';
 
 import * as Styled from './FaceLandmark.styles';
 
@@ -16,10 +19,11 @@ const FaceLandmark: React.FC<FaceLandmarkProps> = ({ isVisible }) => {
   // Refs to the video and canvas elements
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
+  const sceneRef = useRef(null);
 
   // State for the FaceLandmarker, canvas context, and webcam status
   const [faceLandmarker, setFaceLandmarker] = useState(null);
-  const [ctx, setCtx] = useState(null);
+  // const [ctx, setCtx] = useState(null);
   const [webcamRunning, setWebcamRunning] = useState(false);
   const [detectionRunning, setDetectionRunning] = useState(false);
 
@@ -36,11 +40,13 @@ const FaceLandmark: React.FC<FaceLandmarkProps> = ({ isVisible }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [faceLandmarker]);
 
-  // Start the webcam once the FaceLandmarker is initialized
+  // Set canvas dimensiones once webcam is running
   useEffect(() => {
     if (detectionRunning) {
       setCanvasDimensions();
+      initializeScene();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [detectionRunning]);
 
   // Function to initialize the FaceLandmarker and set up the canvas context
@@ -70,13 +76,11 @@ const FaceLandmark: React.FC<FaceLandmarkProps> = ({ isVisible }) => {
       console.log('FaceLandmarker initialized:', faceLandmarkerInstance);
 
       // Initialize the canvas context
-      if (canvasRef.current) {
-        canvasRef.current.width = videoRef.current.videoWidth; // Set canvas width to video width
-        canvasRef.current.height = videoRef.current.videoHeight; // Set canvas height to video height
-        const context = canvasRef.current.getContext('2d');
-        setCtx(context);
-        console.log('Canvas context initialized:', context);
-      }
+      // if (canvasRef.current) {
+      //   const context = canvasRef.current.getContext('2d');
+      //   setCtx(context);
+      //   console.log('Canvas context initialized:', context);
+      // }
     } catch (error) {
       console.error('Error initializing FaceLandmarker:', error);
     }
@@ -145,24 +149,24 @@ const FaceLandmark: React.FC<FaceLandmarkProps> = ({ isVisible }) => {
   };
 
   // Function to draw the detected face landmarks on the canvas
-  const drawLandmarks = (landmarks, ctx, color) => {
-    ctx.fillStyle = color; // Set the color for the landmarks
-    ctx.lineWidth = 1; // Set the line width for drawing
+  // const drawLandmarks = (landmarks, ctx, color) => {
+  //   ctx.fillStyle = color; // Set the color for the landmarks
+  //   ctx.lineWidth = 1; // Set the line width for drawing
 
-    // Loop through each landmark and draw a point on the canvas
-    landmarks.forEach(landmark => {
-      const x = landmark.x * canvasRef.current.width; // Scale x-coordinate to canvas width
-      const y = landmark.y * canvasRef.current.height; // Scale y-coordinate to canvas height
-      ctx.beginPath();
-      ctx.arc(x, y, 1, 0, 1 * Math.PI); // Draw a small circle at the landmark position
-      ctx.fill(); // Fill the circle with the specified color
-    });
-  };
+  //   // Loop through each landmark and draw a point on the canvas
+  //   landmarks.forEach(landmark => {
+  //     const x = landmark.x * canvasRef.current.width; // Scale x-coordinate to canvas width
+  //     const y = landmark.y * canvasRef.current.height; // Scale y-coordinate to canvas height
+  //     ctx.beginPath();
+  //     ctx.arc(x, y, 1, 0, 1 * Math.PI); // Draw a small circle at the landmark position
+  //     ctx.fill(); // Fill the circle with the specified color
+  //   });
+  // };
 
   // Function to continuously detect face landmarks in the video stream
   const detect = async () => {
     // Check if the necessary elements and states are ready for detection
-    if (!faceLandmarker || !ctx || !videoRef.current || !detectionRunning) {
+    if (!faceLandmarker || !videoRef.current || !detectionRunning) {
       console.log('Detection prerequisites not met or detection stopped.');
       return;
     }
@@ -185,14 +189,18 @@ const FaceLandmark: React.FC<FaceLandmarkProps> = ({ isVisible }) => {
     );
 
     // Clear the canvas before drawing new landmarks
-    ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    // ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 
     // If landmarks are detected, draw them on the canvas
     if (results.faceLandmarks && results.faceLandmarks.length > 0) {
-      results.faceLandmarks.forEach(landmarks => {
-        //console.log("Detected landmarks:", landmarks);
-        drawLandmarks(landmarks, ctx, '#ffffff'); // Draw the landmarks in white
-      });
+      // results.faceLandmarks.forEach(landmarks => {
+      //   console.log("Detected landmarks:", landmarks);
+      //   drawLandmarks(landmarks, ctx, '#ffffff'); // Draw the landmarks in white
+      // });
+      onLandmarks(
+        videoRef.current,
+        transformLandmarks(results.faceLandmarks[0])
+      );
     } else {
       console.log('No landmarks detected in this frame.');
     }
@@ -206,17 +214,17 @@ const FaceLandmark: React.FC<FaceLandmarkProps> = ({ isVisible }) => {
   // Function to take a snapshot of the current video frame and landmarks
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const takeSnapshot = () => {
-    if (!canvasRef.current || !ctx) return;
+    if (!canvasRef.current) return;
 
     // Redraw the video frame and the landmarks on the canvas
-    ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-    ctx.drawImage(
-      videoRef.current,
-      0,
-      0,
-      canvasRef.current.width,
-      canvasRef.current.height
-    );
+    // ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    // ctx.drawImage(
+    //   videoRef.current,
+    //   0,
+    //   0,
+    //   canvasRef.current.width,
+    //   canvasRef.current.height
+    // );
 
     // Draw landmarks again before taking the snapshot
     if (faceLandmarker) {
@@ -226,9 +234,9 @@ const FaceLandmark: React.FC<FaceLandmarkProps> = ({ isVisible }) => {
       );
 
       if (results.faceLandmarks && results.faceLandmarks.length > 0) {
-        results.faceLandmarks.forEach(landmarks => {
-          drawLandmarks(landmarks, ctx, '#00FF00'); // Draw the landmarks in green for the snapshot
-        });
+        // results.faceLandmarks.forEach(landmarks => {
+        //   drawLandmarks(landmarks, ctx, '#00FF00'); // Draw the landmarks in green for the snapshot
+        // });
       }
     }
 
@@ -238,6 +246,30 @@ const FaceLandmark: React.FC<FaceLandmarkProps> = ({ isVisible }) => {
     link.href = dataUrl;
     link.download = 'snapshot.png'; // Set the filename for the snapshot
     link.click(); // Trigger the download
+  };
+
+  const onLandmarks = (
+    image: InputImage,
+    landmarks: NormalizedLandmarkList
+  ) => {
+    sceneRef.current.onLandmarks(image, landmarks);
+  };
+
+  const animate = () => {
+    requestAnimationFrame(animate);
+    sceneRef.current.resize(
+      videoRef.current.clientWidth,
+      videoRef.current.clientHeight
+    );
+    sceneRef.current.animate();
+  };
+
+  const initializeScene = () => {
+    const useOrtho = true;
+    const debug = false;
+    sceneRef.current = new SceneManager(canvasRef.current, debug, useOrtho);
+
+    animate();
   };
 
   // Start the detection loop if detectionRunning is true
