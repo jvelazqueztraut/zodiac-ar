@@ -7,15 +7,15 @@ import { transformLandmarks } from 'utils/facemesh/landmarks_helpers';
 import { fadeMotionProps } from 'utils/styles/animations';
 import SceneManager from 'utils/three_components/scene_manager';
 
-import * as Styled from './FaceLandmark.styles';
+import * as Styled from './FaceTracker.styles';
 
-export interface FaceLandmarkProps {
+export interface FaceTrackerProps {
   isVisible: boolean;
 }
 
-const defaultProps: Partial<FaceLandmarkProps> = {};
+const defaultProps: Partial<FaceTrackerProps> = {};
 
-const FaceLandmark: React.FC<FaceLandmarkProps> = ({ isVisible }) => {
+const FaceTracker: React.FC<FaceTrackerProps> = ({ isVisible }) => {
   // Refs to the video and canvas elements
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -193,7 +193,7 @@ const FaceLandmark: React.FC<FaceLandmarkProps> = ({ isVisible }) => {
 
     // If landmarks are detected, draw them on the canvas
     if (results.faceLandmarks && results.faceLandmarks.length > 0) {
-      // results.faceLandmarks.forEach(landmarks => {
+      // results.FaceTrackers.forEach(landmarks => {
       //   console.log("Detected landmarks:", landmarks);
       //   drawLandmarks(landmarks, ctx, '#ffffff'); // Draw the landmarks in white
       // });
@@ -233,8 +233,8 @@ const FaceLandmark: React.FC<FaceLandmarkProps> = ({ isVisible }) => {
         performance.now()
       );
 
-      if (results.faceLandmarks && results.faceLandmarks.length > 0) {
-        // results.faceLandmarks.forEach(landmarks => {
+      if (results.FaceTrackers && results.FaceTrackers.length > 0) {
+        // results.FaceTrackers.forEach(landmarks => {
         //   drawLandmarks(landmarks, ctx, '#00FF00'); // Draw the landmarks in green for the snapshot
         // });
       }
@@ -294,6 +294,6 @@ const FaceLandmark: React.FC<FaceLandmarkProps> = ({ isVisible }) => {
   );
 };
 
-FaceLandmark.defaultProps = defaultProps;
+FaceTracker.defaultProps = defaultProps;
 
-export default FaceLandmark;
+export default FaceTracker;

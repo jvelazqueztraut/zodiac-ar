@@ -5,7 +5,7 @@ import { Router } from 'next/router';
 import React from 'react';
 
 import Button from 'components/Button/Button';
-import FaceLandmark from 'components/FaceLandmark/FaceLandmark';
+import FaceTracker from 'components/FaceTracker/FaceTracker';
 import { getCopy } from 'store/copy.data';
 import { CopyStoreType } from 'store/copy.types';
 import { ISR_TIMEOUT } from 'utils/config';
@@ -46,7 +46,7 @@ const ARPage: React.FunctionComponent<ARPageProps> = ({ initialCopy }) => {
   return (
     <motion.div {...pageMotionProps}>
       <Styled.Wrapper>
-        <FaceLandmark isVisible={true} />
+        <FaceTracker isVisible={true} />
         <Button
           label={initialCopy.ar.cta}
           onClick={() => {
