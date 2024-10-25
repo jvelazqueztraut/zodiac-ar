@@ -1,5 +1,5 @@
 import { AnimatePresence } from 'framer-motion';
-import React from 'react';
+import React, { useRef } from 'react';
 
 import { SPRITES } from 'utils/config.assets';
 import { fadeMotionProps } from 'utils/styles/animations';
@@ -18,10 +18,11 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
   setIsReady,
 }) => {
   const LOADING_DURATION = 2000;
-  const timeoutRef = setTimeout(() => {
+  const timeoutRef = useRef(null);
+  timeoutRef.current = setTimeout(() => {
     console.log('Fake loading for 2 seconds.');
     setIsReady(true);
-    clearTimeout(timeoutRef);
+    clearTimeout(timeoutRef.current);
   }, LOADING_DURATION);
 
   return (
