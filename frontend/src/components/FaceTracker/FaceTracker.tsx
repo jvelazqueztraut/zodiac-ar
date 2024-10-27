@@ -203,14 +203,9 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
     };
 
     // Function to take a snapshot of the current video frame and landmarks
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const takeSnapshot = () => {
       if (!canvasRef.current) return;
-      // TODO: fix snapshot
       console.log('Taking snapshot');
-
-      // TODO Redraw canvas for snapshot
-
       // Convert the canvas content to a PNG image and trigger a download
       const dataUrl = canvasRef.current.toDataURL('image/png');
       const link = document.createElement('a');
