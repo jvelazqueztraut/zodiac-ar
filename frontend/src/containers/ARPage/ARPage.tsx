@@ -2,9 +2,10 @@ import * as Sentry from '@sentry/react';
 import { motion } from 'framer-motion';
 import { GetStaticProps } from 'next';
 import { Router } from 'next/router';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 
 import Button from 'components/Button/Button';
+import DraggableSlider from 'components/DraggableSlider/DraggableSlider';
 import FaceTracker, { CanCapture } from 'components/FaceTracker/FaceTracker';
 import { getCopy } from 'store/copy.data';
 import { CopyStoreType } from 'store/copy.types';
@@ -44,11 +45,19 @@ interface ARPageProps {
 
 const ARPage: React.FunctionComponent<ARPageProps> = ({ initialCopy }) => {
   const faceTrackerRef = useRef<CanCapture>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [selectedAnchor, setSelectedAnchor] = useState<number | null>(null);
+
+  const handleAnchorSelect = (anchorIndex: number) => {
+    setSelectedAnchor(anchorIndex);
+    console.log(`Selected anchor: ${anchorIndex}`);
+  };
 
   return (
     <motion.div {...pageMotionProps}>
       <Styled.Wrapper>
         <FaceTracker ref={faceTrackerRef} isVisible={true} />
+        <DraggableSlider onAnchorSelect={handleAnchorSelect} />
         <Button
           label={initialCopy.ar.cta}
           onClick={faceTrackerRef.current?.capture}
