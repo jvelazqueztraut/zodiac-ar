@@ -4,11 +4,12 @@ import * as THREE from 'three';
 import { scaleLandmark } from '../facemesh/landmarks_helpers';
 import { loadModel } from './models_helpers';
 
-const NUM_ANIMALS = 10;
-const RADIUS_SCALE = 1.5;
+const NUM_ANIMALS = 12;
+const MODEL_SCALE = 0.15;
+const RADIUS_SCALE = 1.1;
 const ROTATION_SPEED = 0.5;
 const Y_SHIFT_SPEED = 4;
-const Y_SHIFT_SCALE = 0.75;
+const Y_SHIFT_SCALE = 0.5;
 
 export default class Animals {
   scene: THREE.Scene;
@@ -91,6 +92,11 @@ export default class Animals {
       this.width,
       this.height
     );
+    const faceCenter = scaleLandmark(
+      this.landmarks[1],
+      this.width,
+      this.height
+    );
 
     // These points seem appropriate 446, 265, 372, 264
     const leftEyeUpper1 = scaleLandmark(
@@ -113,7 +119,7 @@ export default class Animals {
         (leftEyeUpper1.y - rightEyeUpper1.y) ** 2 +
         (leftEyeUpper1.z - rightEyeUpper1.z) ** 2
     );
-    const scale = eyeDist / 4 / this.scaleFactor;
+    const baseScale = (MODEL_SCALE * eyeDist) / this.scaleFactor;
 
     // use two vectors to rotate objects
     // Vertical Vector from midEyes to noseBottom
@@ -158,13 +164,18 @@ export default class Animals {
       const x = midEyes.x + radius * Math.sin(angle);
       const z = midEyes.z + radius * Math.cos(angle); // adjust z position to be in front of the face
       const yShift = eyeDist * Y_SHIFT_SCALE * Math.sin(angle * Y_SHIFT_SPEED); // adjust y position to change with time
-      const y = midEyes.y - eyeDist + yShift; // y position from face center
+      const y = faceCenter.y + yShift; // y position from face center
 
       this.objects[i].position.set(x, y, z);
       this.objects[i].rotation.set(xRot, yRot + Math.PI / 2 + angle, zRot); // correct to be looking to the side
 
-      const scaleDistance = scale / ((midEyes.z + radius - z) / radius + 1); // fake distance by scaling
-      this.objects[i].scale.set(scaleDistance, scaleDistance, scaleDistance);
+      const scaleWithDistance =
+        baseScale / ((midEyes.z + radius - z) / radius + 1); // fake distance by scaling
+      this.objects[i].scale.set(
+        scaleWithDistance,
+        scaleWithDistance,
+        scaleWithDistance
+      );
     }
   }
 
