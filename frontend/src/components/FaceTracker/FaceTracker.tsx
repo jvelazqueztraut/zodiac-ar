@@ -1,4 +1,3 @@
-import { InputImage, NormalizedLandmarkList } from '@mediapipe/face_mesh';
 import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
 import { AnimatePresence } from 'framer-motion';
 import React, {
@@ -34,12 +33,14 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
     }));
 
     // Refs to the video and canvas elements
-    const videoRef = useRef(null);
-    const canvasRef = useRef(null);
-    const sceneRef = useRef(null);
+    const videoRef = useRef<HTMLVideoElement | null>(null);
+    const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    const sceneRef = useRef<SceneManager | null>(null);
 
     // State for the FaceLandmarker, canvas context, and webcam status
-    const [faceLandmarker, setFaceLandmarker] = useState(null);
+    const [faceLandmarker, setFaceLandmarker] = useState<FaceLandmarker | null>(
+      null
+    );
     const [webcamRunning, setWebcamRunning] = useState(false);
     const [detectionRunning, setDetectionRunning] = useState(false);
 
@@ -132,7 +133,7 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
     // Function to stop the webcam and face detection
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const stopWebcam = () => {
-      const stream = videoRef.current.srcObject;
+      const stream = videoRef.current.srcObject as MediaStream;
       if (stream) {
         const tracks = stream.getTracks();
         tracks.forEach(track => track.stop()); // Stop all tracks (video and audio)
@@ -182,9 +183,9 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
         performance.now()
       );
 
-      // If landmarks are detected, draw them on the canvas
+      // If landmarks are detected, send them to scene manager
       if (results.faceLandmarks && results.faceLandmarks.length > 0) {
-        onLandmarks(
+        sceneRef.current.onLandmarks(
           videoRef.current,
           transformLandmarks(results.faceLandmarks[0])
         );
@@ -213,13 +214,6 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
       link.href = dataUrl;
       link.download = 'snapshot.png'; // Set the filename for the snapshot
       link.click(); // Trigger the download
-    };
-
-    const onLandmarks = (
-      image: InputImage,
-      landmarks: NormalizedLandmarkList
-    ) => {
-      sceneRef.current.onLandmarks(image, landmarks);
     };
 
     const animate = () => {
