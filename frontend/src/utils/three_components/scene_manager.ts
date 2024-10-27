@@ -12,7 +12,7 @@ import Glasses from './glasses';
  * @param {Number} height height of video
  * @param {Number} fov fov of perspective camera
  */
-const cameraDistance = (height, fov) => {
+const cameraDistance = (height: number, fov: number) => {
   return height / 2 / Math.tan(((fov / 2) * Math.PI) / 180);
 };
 

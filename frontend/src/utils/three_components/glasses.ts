@@ -1,24 +1,8 @@
 import { NormalizedLandmarkList } from '@mediapipe/face_mesh';
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 import { scaleLandmark } from '../facemesh/landmarks_helpers';
-
-function loadModel(file) {
-  return new Promise((res, rej) => {
-    const loader = new GLTFLoader();
-    loader.load(
-      file,
-      gltf => {
-        res(gltf.scene);
-      },
-      undefined,
-      error => {
-        rej(error);
-      }
-    );
-  });
-}
+import { loadModel } from './models_helpers';
 
 export default class Glasses {
   scene: THREE.Scene;
