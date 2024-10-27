@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { scaleLandmark } from '../facemesh/landmarks_helpers';
 import { loadModel } from './models_helpers';
 
-const NUM_ANIMALS = 10;
+const NUM_ANIMALS = 1;
 
 export default class Animals {
   scene: THREE.Scene;
@@ -14,6 +14,7 @@ export default class Animals {
   landmarks: NormalizedLandmarkList | null;
   objects: THREE.Object3D[];
   scaleFactor: number;
+  mixer: THREE.AnimationMixer;
 
   constructor(scene: THREE.Scene, width: number, height: number) {
     this.scene = scene;
@@ -27,14 +28,23 @@ export default class Animals {
 
   async loadModel() {
     const model = (await loadModel('/3d/animals/bull.gltf')) as THREE.Object3D;
+    console.log(model);
+
+    if (model.animations.length > 0) {
+      this.mixer = new THREE.AnimationMixer(model);
+      console.log(model.animations[0]);
+      const action = this.mixer.clipAction(model.animations[0]);
+      action.setLoop(THREE.LoopRepeat);
+      action.play();
+    }
 
     // scale 3d object
-    const bbox = new THREE.Box3().setFromObject(model);
+    const bbox = new THREE.Box3().setFromObject(model.scene);
     const size = bbox.getSize(new THREE.Vector3());
     this.scaleFactor = size.x;
 
     for (let i = 0; i < NUM_ANIMALS; i++) {
-      const object = model.clone();
+      const object = model.scene.clone();
       object.name = 'animals' + i;
       this.objects.push(object);
     }
@@ -51,8 +61,10 @@ export default class Animals {
     this.needsUpdate = true;
   }
 
-  updateAnimals() {
+  updateAnimals(delta: number) {
     if (!this.landmarks && this.objects.length > 0) return;
+
+    if (this.mixer) this.mixer.update(delta);
     // Points for reference
     // https://raw.githubusercontent.com/google/mediapipe/master/mediapipe/modules/face_geometry/data/canonical_face_model_uv_visualization.png
 
@@ -157,12 +169,12 @@ export default class Animals {
     }
   }
 
-  update() {
+  update(delta: number) {
     if (this.needsUpdate) {
       const inScene = !!this.scene.getObjectByName('animals0');
       const shouldShow = !!this.landmarks;
       if (inScene) {
-        shouldShow ? this.updateAnimals() : this.removeAnimals();
+        shouldShow ? this.updateAnimals(delta) : this.removeAnimals();
       } else {
         if (shouldShow) {
           this.addAnimals();

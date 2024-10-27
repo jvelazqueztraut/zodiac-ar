@@ -40,10 +40,12 @@ export default class SceneManager {
   animals: Animals;
   videoWidth: number;
   videoHeight: number;
+  clock: THREE.Clock;
 
   constructor(canvas: HTMLCanvasElement, debug = false, useOrtho = true) {
     this.canvas = canvas;
     this.scene = new THREE.Scene();
+    this.clock = new THREE.Clock();
     this.debug = debug;
     this.useOrtho = useOrtho;
     this.renderer = new THREE.WebGLRenderer({
@@ -206,7 +208,7 @@ export default class SceneManager {
     this.glasses.update();
 
     // update animals
-    this.animals.update();
+    this.animals.update(this.clock.getDelta());
 
     // render scene
     this.renderer.render(this.scene, this.camera);

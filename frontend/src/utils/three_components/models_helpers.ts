@@ -6,7 +6,7 @@ export const loadModel = (file: string) => {
     loader.load(
       file,
       gltf => {
-        res(gltf.scene);
+        res(gltf);
       },
       undefined,
       error => {

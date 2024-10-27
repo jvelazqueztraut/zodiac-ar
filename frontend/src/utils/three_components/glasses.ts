@@ -23,7 +23,9 @@ export default class Glasses {
   }
 
   async loadGlasses() {
-    this.glasses = await loadModel('/3d/black-glasses/scene.gltf');
+    this.glasses = (
+      (await loadModel('/3d/black-glasses/scene.gltf')) as THREE.Object3D
+    ).scene;
 
     // scale glasses
     const bbox = new THREE.Box3().setFromObject(this.glasses);
