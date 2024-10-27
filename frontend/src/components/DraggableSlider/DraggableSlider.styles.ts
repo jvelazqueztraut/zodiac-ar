@@ -13,9 +13,8 @@ export const Slider = styled.div<{ left: number; top: number }>`
   left: ${props => props.left}%;
   top: ${props => props.top}%;
   transform: translate(-50%, -50%);
-  width: 50px;
-  height: 50px;
-  background-color: red;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   cursor: pointer;
 `;

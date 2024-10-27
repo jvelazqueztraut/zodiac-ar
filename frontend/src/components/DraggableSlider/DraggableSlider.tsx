@@ -119,7 +119,8 @@ const DraggableSlider: React.FC<DraggableSliderProps> = ({
             top={anchor.y}
             selected={index === selectedAnchor}
             icon={anchor.icon}
-            text={anchor.text}
+            hint={anchor.text}
+            isHintVisible={selectedAnchor === null}
           />
         ))}
         <Styled.Slider

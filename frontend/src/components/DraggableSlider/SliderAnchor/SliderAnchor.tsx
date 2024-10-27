@@ -7,7 +7,8 @@ interface SliderAnchorProps {
   top: number;
   selected: boolean;
   icon: string;
-  text: string;
+  hint: string;
+  isHintVisible: boolean;
 }
 
 const SliderAnchor: React.FC<SliderAnchorProps> = ({
@@ -15,12 +16,13 @@ const SliderAnchor: React.FC<SliderAnchorProps> = ({
   top,
   selected,
   icon,
-  text,
+  hint,
+  isHintVisible,
 }) => {
   return (
-    <Styled.Wrapper left={left} top={top} selected={selected}>
-      <Styled.Icon src={icon} alt="Anchor Icon" />
-      <Styled.Text>{text}</Styled.Text>
+    <Styled.Wrapper left={left} top={top}>
+      <Styled.Icon src={icon} selected={selected} alt="Anchor Icon" />
+      <Styled.Text visible={isHintVisible}>{hint}</Styled.Text>
     </Styled.Wrapper>
   );
 };
