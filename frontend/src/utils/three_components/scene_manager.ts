@@ -2,6 +2,7 @@ import { InputImage, NormalizedLandmarkList } from '@mediapipe/face_mesh';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
+import Animals from './animals';
 import FaceMask from './face_mask';
 import Glasses from './glasses';
 
@@ -36,6 +37,7 @@ export default class SceneManager {
   controls: OrbitControls;
   faceMask: FaceMask;
   glasses: Glasses;
+  animals: Animals;
   videoWidth: number;
   videoHeight: number;
 
@@ -54,6 +56,7 @@ export default class SceneManager {
     this.buildControls();
     this.buildFaceMask();
     this.buildGlasses();
+    this.buildAnimals();
   }
 
   buildFaceMask() {
@@ -67,6 +70,14 @@ export default class SceneManager {
 
   buildGlasses() {
     this.glasses = new Glasses(
+      this.scene,
+      this.renderer.domElement.width,
+      this.renderer.domElement.height
+    );
+  }
+
+  buildAnimals() {
+    this.animals = new Animals(
       this.scene,
       this.renderer.domElement.width,
       this.renderer.domElement.height
@@ -182,6 +193,9 @@ export default class SceneManager {
     // update glasses
     this.glasses.update();
 
+    // update animals
+    this.animals.update();
+
     // render scene
     this.renderer.render(this.scene, this.camera);
   }
@@ -196,6 +210,7 @@ export default class SceneManager {
       // this.videoBg.setImage(image);
       this.faceMask.updateLandmarks(landmarks);
       this.glasses.updateLandmarks(landmarks);
+      this.animals.updateLandmarks(landmarks);
     }
   }
 }
