@@ -40,7 +40,6 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
 
     // State for the FaceLandmarker, canvas context, and webcam status
     const [faceLandmarker, setFaceLandmarker] = useState(null);
-    // const [ctx, setCtx] = useState(null);
     const [webcamRunning, setWebcamRunning] = useState(false);
     const [detectionRunning, setDetectionRunning] = useState(false);
 
@@ -91,13 +90,6 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
         // Save the FaceLandmarker instance to the state
         setFaceLandmarker(faceLandmarkerInstance);
         console.log('FaceLandmarker initialized:', faceLandmarkerInstance);
-
-        // Initialize the canvas context
-        // if (canvasRef.current) {
-        //   const context = canvasRef.current.getContext('2d');
-        //   setCtx(context);
-        //   console.log('Canvas context initialized:', context);
-        // }
       } catch (error) {
         console.error('Error initializing FaceLandmarker:', error);
       }
@@ -165,21 +157,6 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
       }
     };
 
-    // Function to draw the detected face landmarks on the canvas
-    // const drawLandmarks = (landmarks, ctx, color) => {
-    //   ctx.fillStyle = color; // Set the color for the landmarks
-    //   ctx.lineWidth = 1; // Set the line width for drawing
-
-    //   // Loop through each landmark and draw a point on the canvas
-    //   landmarks.forEach(landmark => {
-    //     const x = landmark.x * canvasRef.current.width; // Scale x-coordinate to canvas width
-    //     const y = landmark.y * canvasRef.current.height; // Scale y-coordinate to canvas height
-    //     ctx.beginPath();
-    //     ctx.arc(x, y, 1, 0, 1 * Math.PI); // Draw a small circle at the landmark position
-    //     ctx.fill(); // Fill the circle with the specified color
-    //   });
-    // };
-
     // Function to continuously detect face landmarks in the video stream
     const detect = async () => {
       // Check if the necessary elements and states are ready for detection
@@ -205,15 +182,8 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
         performance.now()
       );
 
-      // Clear the canvas before drawing new landmarks
-      // ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-
       // If landmarks are detected, draw them on the canvas
       if (results.faceLandmarks && results.faceLandmarks.length > 0) {
-        // results.FaceTrackers.forEach(landmarks => {
-        //   console.log("Detected landmarks:", landmarks);
-        //   drawLandmarks(landmarks, ctx, '#ffffff'); // Draw the landmarks in white
-        // });
         onLandmarks(
           videoRef.current,
           transformLandmarks(results.faceLandmarks[0])
@@ -235,29 +205,7 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
       // TODO: fix snapshot
       console.log('Taking snapshot');
 
-      // Redraw the video frame and the landmarks on the canvas
-      // ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-      // ctx.drawImage(
-      //   videoRef.current,
-      //   0,
-      //   0,
-      //   canvasRef.current.width,
-      //   canvasRef.current.height
-      // );
-
-      // Draw landmarks again before taking the snapshot
-      // if (faceLandmarker) {
-      //   const results = faceLandmarker.detectForVideo(
-      //     videoRef.current,
-      //     performance.now()
-      //   );
-
-      //   if (results.FaceTrackers && results.FaceTrackers.length > 0) {
-      //     // results.FaceTrackers.forEach(landmarks => {
-      //     //   drawLandmarks(landmarks, ctx, '#00FF00'); // Draw the landmarks in green for the snapshot
-      //     // });
-      //   }
-      // }
+      // TODO Redraw canvas for snapshot
 
       // Convert the canvas content to a PNG image and trigger a download
       const dataUrl = canvasRef.current.toDataURL('image/png');
