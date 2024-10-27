@@ -52,8 +52,9 @@ const ARPage: React.FunctionComponent<ARPageProps> = ({ initialCopy }) => {
   );
 
   const handleFilterSelect = (filterIndex: number) => {
+    if (selectedFilter !== filterIndex)
+      console.log(`Selected filter: ${FilterTypeNames[filterIndex]}`);
     setSelectedFilter(filterIndex);
-    console.log(`Selected filter: ${FilterTypeNames[filterIndex]}`);
   };
 
   return (

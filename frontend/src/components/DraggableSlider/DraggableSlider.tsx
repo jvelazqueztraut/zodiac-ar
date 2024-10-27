@@ -20,6 +20,7 @@ interface DraggableSliderProps {
 const DraggableSlider: React.FC<DraggableSliderProps> = ({
   onAnchorSelect,
 }) => {
+  const [userDrag, setUserDrag] = useState(false);
   const [sliderPosition, setSliderPosition] = useState({ x: 50, y: 50 });
   const [selectedAnchor, setSelectedAnchor] = useState<FilterTypes | null>(
     null
@@ -48,6 +49,7 @@ const DraggableSlider: React.FC<DraggableSliderProps> = ({
   ];
 
   const handleDrag = (clientX: number, clientY: number) => {
+    setUserDrag(true);
     const rect = sliderRef.current?.parentElement?.getBoundingClientRect();
     if (rect) {
       const newLeft = ((clientX - rect.left) / rect.width) * 100;
@@ -86,6 +88,7 @@ const DraggableSlider: React.FC<DraggableSliderProps> = ({
   };
 
   useEffect(() => {
+    if (!userDrag) return; // Skip if the user has not dragged the slider
     const closestAnchorIndex = anchors.reduce(
       (prevIndex, currAnchor, currIndex) => {
         const prevAnchor = anchors[prevIndex];
