@@ -19,3 +19,8 @@ export const Slider = styled.div<{ left: number; top: number }>`
   border-radius: 50%;
   cursor: pointer;
 `;
+
+export const Icon = styled.img`
+  width: 100%;
+  height: 100%;
+`;

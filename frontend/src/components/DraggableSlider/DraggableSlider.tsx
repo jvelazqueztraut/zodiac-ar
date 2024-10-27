@@ -102,7 +102,9 @@ const DraggableSlider: React.FC<DraggableSliderProps> = ({
           top={sliderPosition.y}
           onMouseDown={handleMouseDown}
           onTouchStart={handleTouchStart}
-        />
+        >
+          <Styled.Icon src={SPRITES.ZodiacIcon} alt="Slider Icon" />
+        </Styled.Slider>
       </Styled.Wrapper>
     </AnimatePresence>
   );
