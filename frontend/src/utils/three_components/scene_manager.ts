@@ -53,6 +53,7 @@ export default class SceneManager {
       canvas: this.canvas,
       devicePixelRation: window.devicePixelRatio || 1,
       alpha: true,
+      preserveDrawingBuffer: true, // to allow snapshot
     });
     this.fov = 63;
     this.buildCamera();
