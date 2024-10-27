@@ -2,10 +2,11 @@ import * as Sentry from '@sentry/react';
 import { motion } from 'framer-motion';
 import { GetStaticProps } from 'next';
 import { Router } from 'next/router';
-import React from 'react';
+import React, { useRef, useState } from 'react';
 
 import Button from 'components/Button/Button';
-import FaceLandmark from 'components/FaceLandmark/FaceLandmark';
+import DraggableSlider from 'components/DraggableSlider/DraggableSlider';
+import FaceTracker, { CanCapture } from 'components/FaceTracker/FaceTracker';
 import { getCopy } from 'store/copy.data';
 import { CopyStoreType } from 'store/copy.types';
 import { ISR_TIMEOUT } from 'utils/config';
@@ -13,6 +14,8 @@ import { Pages } from 'utils/routes';
 import { pageMotionProps } from 'utils/styles/animations';
 
 import * as Styled from './ARPage.styles';
+
+import { FilterTypeNames, FilterTypes } from 'constants/ar-constants';
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   try {
@@ -43,15 +46,29 @@ interface ARPageProps {
 }
 
 const ARPage: React.FunctionComponent<ARPageProps> = ({ initialCopy }) => {
+  const faceTrackerRef = useRef<CanCapture>(null);
+  const [selectedFilter, setSelectedFilter] = useState<FilterTypes | null>(
+    null
+  );
+
+  const handleFilterSelect = (filterIndex: number) => {
+    if (selectedFilter !== filterIndex)
+      console.log(`Selected filter: ${FilterTypeNames[filterIndex]}`);
+    setSelectedFilter(filterIndex);
+  };
+
   return (
     <motion.div {...pageMotionProps}>
       <Styled.Wrapper>
-        <FaceLandmark isVisible={true} />
+        <FaceTracker
+          ref={faceTrackerRef}
+          isVisible={true}
+          selectedFilter={selectedFilter}
+        />
+        <DraggableSlider onAnchorSelect={handleFilterSelect} />
         <Button
           label={initialCopy.ar.cta}
-          onClick={() => {
-            // TODO
-          }}
+          onClick={faceTrackerRef.current?.capture}
         />
       </Styled.Wrapper>
     </motion.div>
