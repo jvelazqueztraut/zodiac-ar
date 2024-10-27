@@ -4,7 +4,11 @@ import * as THREE from 'three';
 import { scaleLandmark } from '../facemesh/landmarks_helpers';
 import { loadModel } from './models_helpers';
 
-const NUM_ANIMALS = 1;
+const NUM_ANIMALS = 10;
+const RADIUS_SCALE = 1.5;
+const ROTATION_SPEED = 0.5;
+const Y_SHIFT_SPEED = 4;
+const Y_SHIFT_SCALE = 0.75;
 
 export default class Animals {
   scene: THREE.Scene;
@@ -15,6 +19,7 @@ export default class Animals {
   objects: THREE.Object3D[];
   scaleFactor: number;
   mixer: THREE.AnimationMixer;
+  time = 0;
 
   constructor(scene: THREE.Scene, width: number, height: number) {
     this.scene = scene;
@@ -63,6 +68,8 @@ export default class Animals {
 
   updateAnimals(delta: number) {
     if (!this.landmarks && this.objects.length > 0) return;
+
+    this.time += delta;
 
     if (this.mixer) this.mixer.update(delta);
     // Points for reference
@@ -143,17 +150,21 @@ export default class Animals {
       ) -
       Math.PI / 2;
 
-    const radius = eyeDist * 1.5; // objects are placed in a circle around the eyes
+    const radius = eyeDist * RADIUS_SCALE; // objects are placed in a circle around the eyes
+    const baseRotation = this.time * ROTATION_SPEED; // rotate the objects around the face
 
     for (let i = 0; i < this.objects.length; i++) {
-      const angle = (i / NUM_ANIMALS) * Math.PI * 2;
-      const x = midEyes.x + radius * Math.cos(angle);
-      const y = midEyes.y;
-      const z = midEyes.z + radius * Math.sin(angle) + 200;
+      const angle = baseRotation + (i / NUM_ANIMALS) * Math.PI * 2;
+      const x = midEyes.x + radius * Math.sin(angle);
+      const z = midEyes.z + radius * Math.cos(angle); // adjust z position to be in front of the face
+      const yShift = eyeDist * Y_SHIFT_SCALE * Math.sin(angle * Y_SHIFT_SPEED); // adjust y position to change with time
+      const y = midEyes.y - eyeDist + yShift; // y position from face center
 
       this.objects[i].position.set(x, y, z);
-      this.objects[i].rotation.set(xRot, yRot, zRot);
-      this.objects[i].scale.set(scale, scale, scale);
+      this.objects[i].rotation.set(xRot, yRot + Math.PI / 2 + angle, zRot); // correct to be looking to the side
+
+      const scaleDistance = scale / ((midEyes.z + radius - z) / radius + 1); // fake distance by scaling
+      this.objects[i].scale.set(scaleDistance, scaleDistance, scaleDistance);
     }
   }
 
