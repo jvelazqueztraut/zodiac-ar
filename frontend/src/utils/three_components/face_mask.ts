@@ -23,6 +23,7 @@ export default class FaceMask {
     this.materialOccluder = new THREE.MeshNormalMaterial({ colorWrite: false }); // change to true for debugging
     this.faceTexture = null;
     this.texture = new THREE.TextureLoader().load('/images/faceMeshPiscis.png');
+    this.texture.flipY = false;
     this.materialTexture = new THREE.MeshBasicMaterial({
       map: this.texture,
       transparent: true,
