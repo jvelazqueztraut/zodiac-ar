@@ -1,6 +1,10 @@
 import { AnimatePresence } from 'framer-motion';
 import React, { useEffect, useRef, useState } from 'react';
 
+import { SPRITES } from 'utils/config.assets';
+
+import SliderAnchor from './SliderAnchor/SliderAnchor';
+
 import * as Styled from './DraggableSlider.styles';
 
 interface DraggableSliderProps {
@@ -15,9 +19,9 @@ const DraggableSlider: React.FC<DraggableSliderProps> = ({
   const sliderRef = useRef<HTMLDivElement>(null);
 
   const anchors = [
-    { x: 50, y: 10 }, // Top-center - Anchor 0
-    { x: 90, y: 90 }, // Bottom-right corner - Anchor 1
-    { x: 10, y: 90 }, // Bottom-left corner  - Anchor 2
+    { x: 50, y: 10, icon: SPRITES.SunIcon, text: 'Sun' }, // Top-center - Anchor 0
+    { x: 90, y: 90, icon: SPRITES.MoonIcon, text: 'Moon' }, // Bottom-right corner - Anchor 1
+    { x: 10, y: 90, icon: SPRITES.RisingIcon, text: 'Rising' }, // Bottom-left corner  - Anchor 2
   ];
 
   const handleDrag = (clientX: number, clientY: number) => {
@@ -83,11 +87,13 @@ const DraggableSlider: React.FC<DraggableSliderProps> = ({
     <AnimatePresence>
       <Styled.Wrapper>
         {anchors.map((anchor, index) => (
-          <Styled.Anchor
+          <SliderAnchor
             key={index}
             left={anchor.x}
             top={anchor.y}
             selected={index === selectedAnchor}
+            icon={anchor.icon}
+            text={anchor.text}
           />
         ))}
         <Styled.Slider

@@ -8,21 +8,6 @@ export const Wrapper = styled(motion.div)`
   margin: auto;
 `;
 
-export const Anchor = styled.div<{
-  left: number;
-  top: number;
-  selected: boolean;
-}>`
-  position: absolute;
-  left: ${props => props.left}%;
-  top: ${props => props.top}%;
-  transform: translate(-50%, -50%);
-  width: 20px;
-  height: 20px;
-  background-color: ${props => (props.selected ? 'blue' : 'gray')};
-  border-radius: 50%;
-`;
-
 export const Slider = styled.div<{ left: number; top: number }>`
   position: absolute;
   left: ${props => props.left}%;
