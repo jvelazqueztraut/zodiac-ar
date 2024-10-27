@@ -4,7 +4,6 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 import Animals from './animals';
 import FaceMask from './face_mask';
-import Glasses from './glasses';
 
 /**
  *
@@ -36,7 +35,6 @@ export default class SceneManager {
   camera: THREE.PerspectiveCamera | THREE.OrthographicCamera;
   controls: OrbitControls;
   faceMask: FaceMask;
-  glasses: Glasses;
   animals: Animals;
   videoWidth: number;
   videoHeight: number;
@@ -57,7 +55,6 @@ export default class SceneManager {
     this.buildCamera();
     this.buildControls();
     this.buildFaceMask();
-    this.buildGlasses();
     this.buildAnimals();
     this.addLights();
   }
@@ -65,14 +62,6 @@ export default class SceneManager {
   buildFaceMask() {
     // this component draws faces
     this.faceMask = new FaceMask(
-      this.scene,
-      this.renderer.domElement.width,
-      this.renderer.domElement.height
-    );
-  }
-
-  buildGlasses() {
-    this.glasses = new Glasses(
       this.scene,
       this.renderer.domElement.width,
       this.renderer.domElement.height
@@ -193,7 +182,7 @@ export default class SceneManager {
         this.renderer.domElement.height
       );
 
-      this.glasses.updateDimensions(
+      this.animals.updateDimensions(
         this.renderer.domElement.width,
         this.renderer.domElement.height
       );
@@ -203,9 +192,6 @@ export default class SceneManager {
 
     // update faces mask
     this.faceMask.update();
-
-    // update glasses
-    this.glasses.update();
 
     // update animals
     this.animals.update(this.clock.getDelta());
@@ -223,7 +209,6 @@ export default class SceneManager {
     if (image && landmarks) {
       // this.videoBg.setImage(image);
       this.faceMask.updateLandmarks(landmarks);
-      this.glasses.updateLandmarks(landmarks);
       this.animals.updateLandmarks(landmarks);
     }
   }
