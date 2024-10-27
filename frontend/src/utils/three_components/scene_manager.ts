@@ -57,6 +57,7 @@ export default class SceneManager {
     this.buildFaceMask();
     this.buildGlasses();
     this.buildAnimals();
+    this.addLights();
   }
 
   buildFaceMask() {
@@ -119,6 +120,17 @@ export default class SceneManager {
       this.renderer.domElement.height,
       this.fov
     );
+  }
+
+  addLights() {
+    // Add ambient light
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+    this.scene.add(ambientLight);
+
+    // Add directional light
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(0, 1, 1).normalize();
+    this.scene.add(directionalLight);
   }
 
   // we need to resize canvas rendering dimensions

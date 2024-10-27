@@ -27,7 +27,6 @@ export default class Animals {
 
   async loadModel() {
     const model = (await loadModel('/3d/animals/bull.gltf')) as THREE.Object3D;
-    console.log(model);
 
     // scale 3d object
     const bbox = new THREE.Box3().setFromObject(model);
