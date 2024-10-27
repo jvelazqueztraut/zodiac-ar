@@ -14,8 +14,11 @@ import SceneManager from 'utils/three_components/scene_manager';
 
 import * as Styled from './FaceTracker.styles';
 
+import { FilterTypes } from 'constants/ar-constants';
+
 export interface FaceTrackerProps {
   isVisible: boolean;
+  selectedFilter: FilterTypes | null;
 }
 
 export interface CanCapture {
@@ -25,7 +28,7 @@ export interface CanCapture {
 const defaultProps: Partial<FaceTrackerProps> = {};
 
 const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
-  ({ isVisible }, ref) => {
+  ({ isVisible, selectedFilter }, ref) => {
     useImperativeHandle(ref, () => ({
       capture() {
         takeSnapshot();
@@ -240,6 +243,13 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [detectionRunning]);
+
+    // Update the scene assets when the selectedAnchor changes
+    useEffect(() => {
+      if (sceneRef.current) {
+        sceneRef.current.updateSceneFilter(selectedFilter);
+      }
+    }, [selectedFilter]);
 
     return (
       <AnimatePresence>

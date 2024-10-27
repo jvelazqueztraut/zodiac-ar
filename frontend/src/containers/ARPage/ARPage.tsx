@@ -15,6 +15,8 @@ import { pageMotionProps } from 'utils/styles/animations';
 
 import * as Styled from './ARPage.styles';
 
+import { FilterTypeNames, FilterTypes } from 'constants/ar-constants';
+
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   try {
     const initialCopy = await getCopy(Pages.ar, locale);
@@ -45,19 +47,24 @@ interface ARPageProps {
 
 const ARPage: React.FunctionComponent<ARPageProps> = ({ initialCopy }) => {
   const faceTrackerRef = useRef<CanCapture>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [selectedAnchor, setSelectedAnchor] = useState<number | null>(null);
+  const [selectedFilter, setSelectedFilter] = useState<FilterTypes | null>(
+    null
+  );
 
-  const handleAnchorSelect = (anchorIndex: number) => {
-    setSelectedAnchor(anchorIndex);
-    console.log(`Selected anchor: ${anchorIndex}`);
+  const handleFilterSelect = (filterIndex: number) => {
+    setSelectedFilter(filterIndex);
+    console.log(`Selected filter: ${FilterTypeNames[filterIndex]}`);
   };
 
   return (
     <motion.div {...pageMotionProps}>
       <Styled.Wrapper>
-        <FaceTracker ref={faceTrackerRef} isVisible={true} />
-        <DraggableSlider onAnchorSelect={handleAnchorSelect} />
+        <FaceTracker
+          ref={faceTrackerRef}
+          isVisible={true}
+          selectedFilter={selectedFilter}
+        />
+        <DraggableSlider onAnchorSelect={handleFilterSelect} />
         <Button
           label={initialCopy.ar.cta}
           onClick={faceTrackerRef.current?.capture}

@@ -5,6 +5,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import Animals from './animals';
 import FaceMask from './face_mask';
 
+import { FilterTypeAssets, FilterTypes } from 'constants/ar-constants';
+
 /**
  *
  * Finds distance to position perspective camera
@@ -39,6 +41,7 @@ export default class SceneManager {
   videoWidth: number;
   videoHeight: number;
   clock: THREE.Clock;
+  currentFilter: FilterTypes | null;
 
   constructor(canvas: HTMLCanvasElement, debug = false, useOrtho = true) {
     this.canvas = canvas;
@@ -57,6 +60,8 @@ export default class SceneManager {
     this.buildFaceMask();
     this.buildAnimals();
     this.addLights();
+
+    this.currentFilter = null;
   }
 
   buildFaceMask() {
@@ -152,6 +157,25 @@ export default class SceneManager {
       this.renderer.setSize(width, height, false);
     }
     return needResize;
+  }
+
+  updateSceneFilter(selectedFilter: FilterTypes) {
+    if (this.currentFilter !== selectedFilter) {
+      this.currentFilter = selectedFilter;
+      Promise.all([
+        this.animals.transitionOut(),
+        this.faceMask.transitionOut(),
+      ]).then(() => {
+        const assetName = FilterTypeAssets[selectedFilter];
+        Promise.all([
+          this.animals.updateAssets(assetName),
+          this.faceMask.updateAssets(assetName),
+        ]).then(() => {
+          this.animals.transitionIn();
+          this.faceMask.transitionIn();
+        });
+      });
+    }
   }
 
   updateCamera() {

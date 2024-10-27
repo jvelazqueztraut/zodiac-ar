@@ -7,6 +7,12 @@ import SliderAnchor from './SliderAnchor/SliderAnchor';
 
 import * as Styled from './DraggableSlider.styles';
 
+import {
+  FilterTypeIcons,
+  FilterTypeNames,
+  FilterTypes,
+} from 'constants/ar-constants';
+
 interface DraggableSliderProps {
   onAnchorSelect: (anchorIndex: number) => void;
 }
@@ -15,13 +21,30 @@ const DraggableSlider: React.FC<DraggableSliderProps> = ({
   onAnchorSelect,
 }) => {
   const [sliderPosition, setSliderPosition] = useState({ x: 50, y: 50 });
-  const [selectedAnchor, setSelectedAnchor] = useState(0);
+  const [selectedAnchor, setSelectedAnchor] = useState<FilterTypes | null>(
+    null
+  );
   const sliderRef = useRef<HTMLDivElement>(null);
 
   const anchors = [
-    { x: 50, y: 10, icon: SPRITES.SunIcon, text: 'Sun' }, // Top-center - Anchor 0
-    { x: 90, y: 90, icon: SPRITES.MoonIcon, text: 'Moon' }, // Bottom-right corner - Anchor 1
-    { x: 10, y: 90, icon: SPRITES.RisingIcon, text: 'Rising' }, // Bottom-left corner  - Anchor 2
+    {
+      x: 50,
+      y: 10,
+      icon: FilterTypeIcons[FilterTypes.Sun],
+      text: FilterTypeNames[FilterTypes.Sun],
+    }, // Top-center - Anchor 0
+    {
+      x: 90,
+      y: 90,
+      icon: FilterTypeIcons[FilterTypes.Moon],
+      text: FilterTypeNames[FilterTypes.Moon],
+    }, // Bottom-right corner - Anchor 1
+    {
+      x: 10,
+      y: 90,
+      icon: FilterTypeIcons[FilterTypes.Rising],
+      text: FilterTypeNames[FilterTypes.Rising],
+    }, // Bottom-left corner  - Anchor 2
   ];
 
   const handleDrag = (clientX: number, clientY: number) => {
@@ -78,7 +101,7 @@ const DraggableSlider: React.FC<DraggableSliderProps> = ({
       },
       0
     );
-    setSelectedAnchor(closestAnchorIndex);
+    setSelectedAnchor(closestAnchorIndex as FilterTypes);
     onAnchorSelect(closestAnchorIndex);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sliderPosition]);

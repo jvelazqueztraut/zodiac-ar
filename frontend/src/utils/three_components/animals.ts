@@ -2,7 +2,7 @@ import { NormalizedLandmarkList } from '@mediapipe/face_mesh';
 import * as THREE from 'three';
 
 import { scaleLandmark } from '../facemesh/landmarks_helpers';
-import { loadModel } from './models_helpers';
+import { loadGLTFModel } from './models_helpers';
 
 const NUM_ANIMALS = 12;
 const MODEL_SCALE = 0.15;
@@ -15,25 +15,30 @@ export default class Animals {
   scene: THREE.Scene;
   width: number;
   height: number;
-  needsUpdate: boolean;
   landmarks: NormalizedLandmarkList | null;
   objects: THREE.Object3D[];
   scaleFactor: number;
   mixer: THREE.AnimationMixer;
+
   time = 0;
+  enabled = false;
+  needsUpdate = false;
+  isTransitioning = false;
+  transitionScale = 0;
 
   constructor(scene: THREE.Scene, width: number, height: number) {
     this.scene = scene;
     this.width = width;
     this.height = height;
-    this.needsUpdate = false;
     this.landmarks = null;
     this.objects = [];
-    this.loadModel();
+    // this.loadModel();
   }
 
-  async loadModel() {
-    const model = (await loadModel('/3d/animals/bull.gltf')) as THREE.Object3D;
+  async loadModel(name: string) {
+    const model = (await loadGLTFModel(
+      `/3d/animals/${name}.gltf`
+    )) as THREE.Object3D;
     console.log(model);
 
     if (model.animations.length > 0) {
@@ -54,6 +59,47 @@ export default class Animals {
       object.name = 'animals' + i;
       this.objects.push(object);
     }
+    return Promise.resolve(1);
+  }
+
+  transitionOut(): Promise<void> {
+    if (!this.enabled) return Promise.resolve();
+    return new Promise(resolve => {
+      this.isTransitioning = true;
+      const scaleDown = () => {
+        this.transitionScale -= 0.1;
+        if (this.transitionScale > 0) {
+          requestAnimationFrame(scaleDown);
+        } else {
+          this.transitionScale = 0;
+          this.isTransitioning = false;
+          this.removeAnimals();
+          this.enabled = false;
+          console.log('Animals transition out complete');
+          resolve();
+        }
+      };
+      scaleDown();
+    });
+  }
+
+  transitionIn(): Promise<void> {
+    if (!this.enabled) return Promise.reject();
+    return new Promise(resolve => {
+      this.isTransitioning = true;
+      const scaleUp = () => {
+        this.transitionScale += 0.1;
+        if (this.transitionScale < 1) {
+          requestAnimationFrame(scaleUp);
+        } else {
+          this.transitionScale = 1;
+          this.isTransitioning = false;
+          console.log('Animals transition in complete');
+          resolve();
+        }
+      };
+      scaleUp();
+    });
   }
 
   updateDimensions(width: number, height: number) {
@@ -65,6 +111,26 @@ export default class Animals {
   updateLandmarks(landmarks: NormalizedLandmarkList) {
     this.landmarks = landmarks;
     this.needsUpdate = true;
+  }
+
+  updateAssets(name: string): Promise<void> {
+    return new Promise(resolve => {
+      for (let i = 0; i < this.objects.length; i++) {
+        this.objects[i].traverse(child => {
+          if (child instanceof THREE.Mesh) {
+            child.material.dispose();
+            child.geometry.dispose();
+          }
+        });
+      }
+      this.objects = [];
+      this.loadModel(name).then(() => {
+        this.needsUpdate = true;
+        this.enabled = true;
+        console.log('Animals update assets complete');
+        resolve();
+      });
+    });
   }
 
   updateAnimals(delta: number) {
@@ -170,7 +236,8 @@ export default class Animals {
       this.objects[i].rotation.set(xRot, yRot + Math.PI / 2 + angle, zRot); // correct to be looking to the side
 
       const scaleWithDistance =
-        baseScale / ((midEyes.z + radius - z) / radius + 1); // fake distance by scaling
+        (this.transitionScale * baseScale) /
+        ((midEyes.z + radius - z) / radius + 1); // fake distance by scaling
       this.objects[i].scale.set(
         scaleWithDistance,
         scaleWithDistance,
@@ -192,7 +259,7 @@ export default class Animals {
   }
 
   update(delta: number) {
-    if (this.needsUpdate) {
+    if (this.enabled && this.needsUpdate) {
       const inScene = !!this.scene.getObjectByName('animals0');
       const shouldShow = !!this.landmarks;
       if (inScene) {
