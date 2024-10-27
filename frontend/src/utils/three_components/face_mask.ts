@@ -34,9 +34,11 @@ export default class FaceMask {
       `/images/faceMesh/${name}.png`
     );
     this.texture.flipY = false;
+
     this.materialTexture = new THREE.MeshBasicMaterial({
       map: this.texture,
       transparent: true,
+      opacity: 0,
     });
   }
 
@@ -86,6 +88,7 @@ export default class FaceMask {
         if (this.materialTexture.opacity > 0) {
           requestAnimationFrame(fadeOut);
         } else {
+          this.materialTexture.opacity = 0;
           this.isTransitioning = false;
           this.enabled = false;
           console.log('Face Mask transition out complete');
@@ -107,6 +110,7 @@ export default class FaceMask {
         if (this.materialTexture.opacity < 1) {
           requestAnimationFrame(fadeIn);
         } else {
+          this.materialTexture.opacity = 1;
           this.isTransitioning = false;
           console.log('Face Mask transition in complete');
           resolve();
