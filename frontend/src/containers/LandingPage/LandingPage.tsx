@@ -54,7 +54,11 @@ const LandingPage: React.FunctionComponent<LandingPageProps> = () => {
   const [isReady, setIsReady] = useState(false);
 
   const onCTA = () => {
-    router.push(ROUTES.AR, null, { scroll: false });
+    router.push(ROUTES.AR);
+  };
+
+  const onAbout = () => {
+    router.push(ROUTES.ABOUT);
   };
 
   return (
@@ -83,6 +87,11 @@ const LandingPage: React.FunctionComponent<LandingPageProps> = () => {
                 </Styled.Hero>
                 <motion.div {...landingPageStartButtonMotionProps}>
                   <Button label={copy.landing.cta} onClick={onCTA} />
+                  <Button
+                    label={copy.landing.about}
+                    type="about"
+                    onClick={onAbout}
+                  />
                 </motion.div>
               </Styled.WrapperInner>
             </motion.div>

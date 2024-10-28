@@ -1,5 +1,6 @@
 {
   "title": "Welcome to <a href=\"https://github.com/jvelazqueztraut/zodiac-ar\" target=\"_blank\">Zodiac AR</a>",
-  "subTitle": "A simple web app that uses augmented reality to show you the constellations of the zodiac signs.",
-  "cta": "Start"
+  "subTitle": "Together we will create a unique face filter based on your zodiac signs.",
+  "cta": "Start",
+  "about": "About"
 }

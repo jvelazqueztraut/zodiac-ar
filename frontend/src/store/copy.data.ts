@@ -3,8 +3,8 @@ import { kebabCase } from 'lodash';
 import { Pages } from 'utils/routes';
 
 import { CopyStoreType } from './copy.types';
+import aboutPageEN from './translations/en/aboutPage.json';
 import arPageEN from './translations/en/arPage.json';
-import demoAboutPageEN from './translations/en/demoAboutPage.json';
 import globalEN from './translations/en/global.json';
 import headEN from './translations/en/head.json';
 import landingPageEN from './translations/en/landingPage.json';
@@ -46,7 +46,7 @@ export const getCopy = (page: Pages, locale = process.env.DEFAULT_LOCALE) => {
       tryRequire(`${path}/arPage.json`) ||
       (arPageEN as CopyStoreType['copy']['ar']),
     about:
-      tryRequire(`${path}/demoAboutPage.json`) ||
-      (demoAboutPageEN as CopyStoreType['copy']['about']),
+      tryRequire(`${path}/aboutPage.json`) ||
+      (aboutPageEN as CopyStoreType['copy']['about']),
   } as CopyStoreType['copy'];
 };
