@@ -8,11 +8,12 @@ import {
 } from 'postprocessing';
 import * as THREE from 'three';
 
+import { FilterTransitionDuration } from 'constants/ar-constants';
+
 const VIGNETTE_DARKNESS = 0.6;
 const VIGNETTE_OFFSET = 0.5;
 const BLOOM_INTENSITY = 0.5;
 const BLOOM_LUMINANCE_THRESHOLD = 0.5;
-const TRANSITION_DURATION = 1;
 
 export default class PostProcessing {
   scene: THREE.Scene;
@@ -64,13 +65,15 @@ export default class PostProcessing {
       this.vignetteEffect.darkness = VIGNETTE_DARKNESS;
       this.bloomEffect.intensity = BLOOM_INTENSITY;
       animate(1, 0, {
-        duration: TRANSITION_DURATION,
+        duration: FilterTransitionDuration,
         onUpdate: latest => {
           this.vignetteEffect.darkness = latest * VIGNETTE_DARKNESS;
           this.bloomEffect.intensity = latest * BLOOM_INTENSITY;
         },
         onComplete: () => {
           this.isTransitioning = false;
+          this.enabled = false;
+          console.log('Postprocessing transition out complete');
           resolve();
         },
       });
@@ -84,13 +87,14 @@ export default class PostProcessing {
       this.vignetteEffect.darkness = 0;
       this.bloomEffect.intensity = 0;
       animate(0, 1, {
-        duration: TRANSITION_DURATION,
+        duration: FilterTransitionDuration,
         onUpdate: latest => {
           this.vignetteEffect.darkness = latest * VIGNETTE_DARKNESS;
           this.bloomEffect.intensity = latest * BLOOM_INTENSITY;
         },
         onComplete: () => {
           this.isTransitioning = false;
+          console.log('Postprocessing transition in complete');
           resolve();
         },
       });

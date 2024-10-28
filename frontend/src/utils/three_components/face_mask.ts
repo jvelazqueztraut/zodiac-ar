@@ -1,7 +1,10 @@
 import { NormalizedLandmarkList } from '@mediapipe/face_mesh';
+import { animate } from 'framer-motion';
 import * as THREE from 'three';
 
 import { makeGeometry } from '../facemesh/landmarks_helpers';
+
+import { FilterTransitionDuration } from 'constants/ar-constants';
 
 export default class FaceMask {
   scene: THREE.Scene;
@@ -83,20 +86,19 @@ export default class FaceMask {
     if (this.isTransitioning) return Promise.reject();
     return new Promise(resolve => {
       this.isTransitioning = true;
-      const fadeOut = () => {
-        this.materialTexture.opacity -= 0.05;
-        this.needsUpdate = true;
-        if (this.materialTexture.opacity > 0) {
-          requestAnimationFrame(fadeOut);
-        } else {
-          this.materialTexture.opacity = 0;
+      animate(1, 0, {
+        duration: FilterTransitionDuration,
+        onUpdate: latest => {
+          this.materialTexture.opacity = latest;
+          this.needsUpdate = true;
+        },
+        onComplete: () => {
           this.isTransitioning = false;
           this.enabled = false;
           console.log('Face Mask transition out complete');
           resolve();
-        }
-      };
-      fadeOut();
+        },
+      });
     });
   }
 
@@ -104,20 +106,18 @@ export default class FaceMask {
     if (!this.enabled || this.isTransitioning) return Promise.reject();
     return new Promise(resolve => {
       this.isTransitioning = true;
-      this.materialTexture.opacity = 0;
-      const fadeIn = () => {
-        this.materialTexture.opacity += 0.05;
-        this.needsUpdate = true;
-        if (this.materialTexture.opacity < 1) {
-          requestAnimationFrame(fadeIn);
-        } else {
-          this.materialTexture.opacity = 1;
+      animate(0, 1, {
+        duration: FilterTransitionDuration,
+        onUpdate: latest => {
+          this.materialTexture.opacity = latest;
+          this.needsUpdate = true;
+        },
+        onComplete: () => {
           this.isTransitioning = false;
           console.log('Face Mask transition in complete');
           resolve();
-        }
-      };
-      fadeIn();
+        },
+      });
     });
   }
 

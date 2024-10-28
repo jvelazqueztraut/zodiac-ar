@@ -23,3 +23,5 @@ export const FilterTypeAssets = {
   [FilterTypes.Moon]: 'sagittarius',
   [FilterTypes.Rising]: 'taurus',
 };
+
+export const FilterTransitionDuration = 1;
