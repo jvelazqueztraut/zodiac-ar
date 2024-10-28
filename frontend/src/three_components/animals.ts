@@ -2,7 +2,7 @@ import { NormalizedLandmarkList } from '@mediapipe/face_mesh';
 import { animate } from 'framer-motion';
 import * as THREE from 'three';
 
-import { scaleLandmark } from '../facemesh/landmarks_helpers';
+import { scaleLandmark } from '../utils/facemesh/landmarks_helpers';
 import { loadGLTFModel } from './models_helpers';
 
 import { FilterTransitionDuration } from 'constants/ar-constants';

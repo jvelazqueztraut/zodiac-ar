@@ -7,10 +7,10 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import SceneManager from 'three_components/scene_manager';
 
 import { transformLandmarks } from 'utils/facemesh/landmarks_helpers';
 import { fadeMotionProps } from 'utils/styles/animations';
-import SceneManager from 'utils/three_components/scene_manager';
 
 import * as Styled from './FaceTracker.styles';
 
