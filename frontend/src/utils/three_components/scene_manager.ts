@@ -251,11 +251,12 @@ export default class SceneManager {
     this.videoHeight = videoHeight;
   }
 
-  onLandmarks(image: InputImage, landmarks: NormalizedLandmarkList) {
-    if (image && landmarks) {
-      this.videoBg.setImage(image);
-      this.faceMask.updateLandmarks(landmarks);
-      this.animals.updateLandmarks(landmarks);
-    }
+  onFrame(image: InputImage) {
+    this.videoBg.setImage(image);
+  }
+
+  onLandmarks(landmarks: NormalizedLandmarkList) {
+    this.faceMask.updateLandmarks(landmarks);
+    this.animals.updateLandmarks(landmarks);
   }
 }

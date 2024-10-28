@@ -221,21 +221,19 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
         videoRef.current.videoHeight * scale
       );
 
+      // Send video frame to the 3D scene
+      sceneRef.current.onFrame(canvas2DRef.current);
+
       // Run the face landmark detection for the current video frame
       const results = faceLandmarker.detectForVideo(
         canvas2DRef.current,
         performance.now()
       );
 
-      // If landmarks are detected, send them to scene manager
-      if (results.faceLandmarks && results.faceLandmarks.length > 0) {
-        sceneRef.current.onLandmarks(
-          canvas2DRef.current,
-          transformLandmarks(results.faceLandmarks[0])
-        );
-      } else {
-        console.log('No landmarks detected in this frame.');
-      }
+      // If landmarks are detected for first face, send them to scene manager
+      sceneRef.current.onLandmarks(
+        transformLandmarks(results.faceLandmarks[0] ?? null)
+      );
 
       // Continue the detection loop if the webcam is still running
       if (webcamRunning) {
@@ -293,11 +291,11 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
           <Styled.Wrapper {...fadeMotionProps}>
             {/* Video element for webcam feed */}
             <video ref={videoRef} id="webcam" autoPlay playsInline></video>
-            {/* Aux canvas element for cropping video */}
             {/* Canvas element for 3d scene */}
             <canvas ref={canvas3DRef}></canvas>
           </Styled.Wrapper>
         )}
+        {/* Aux canvas element for cropping video */}
         <Styled.HiddenCanvas ref={canvas2DRef} />
       </AnimatePresence>
     );
