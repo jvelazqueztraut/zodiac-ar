@@ -64,6 +64,7 @@ export default class Animals {
 
   transitionOut(): Promise<void> {
     if (!this.enabled) return Promise.resolve();
+    if (this.isTransitioning) return Promise.reject();
     return new Promise(resolve => {
       this.isTransitioning = true;
       const scaleDown = () => {
@@ -85,6 +86,7 @@ export default class Animals {
 
   transitionIn(): Promise<void> {
     if (!this.enabled) return Promise.reject();
+    if (this.isTransitioning) return Promise.reject();
     return new Promise(resolve => {
       this.isTransitioning = true;
       const scaleUp = () => {
@@ -102,18 +104,8 @@ export default class Animals {
     });
   }
 
-  updateDimensions(width: number, height: number) {
-    this.width = width;
-    this.height = height;
-    this.needsUpdate = true;
-  }
-
-  updateLandmarks(landmarks: NormalizedLandmarkList) {
-    this.landmarks = landmarks;
-    this.needsUpdate = true;
-  }
-
   updateAssets(name: string): Promise<void> {
+    if (this.isTransitioning) return Promise.reject();
     return new Promise(resolve => {
       for (let i = 0; i < this.objects.length; i++) {
         this.objects[i].traverse(child => {
@@ -131,6 +123,17 @@ export default class Animals {
         resolve();
       });
     });
+  }
+
+  updateDimensions(width: number, height: number) {
+    this.width = width;
+    this.height = height;
+    this.needsUpdate = true;
+  }
+
+  updateLandmarks(landmarks: NormalizedLandmarkList) {
+    this.landmarks = landmarks;
+    this.needsUpdate = true;
   }
 
   updateAnimals(delta: number) {

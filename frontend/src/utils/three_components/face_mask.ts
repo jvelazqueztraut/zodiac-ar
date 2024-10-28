@@ -80,6 +80,7 @@ export default class FaceMask {
 
   transitionOut(): Promise<void> {
     if (!this.enabled) return Promise.resolve();
+    if (this.isTransitioning) return Promise.reject();
     return new Promise(resolve => {
       this.isTransitioning = true;
       const fadeOut = () => {
@@ -100,7 +101,7 @@ export default class FaceMask {
   }
 
   transitionIn(): Promise<void> {
-    if (!this.enabled) return Promise.reject();
+    if (!this.enabled || this.isTransitioning) return Promise.reject();
     return new Promise(resolve => {
       this.isTransitioning = true;
       this.materialTexture.opacity = 0;
@@ -121,6 +122,7 @@ export default class FaceMask {
   }
 
   updateAssets(name: string): Promise<void> {
+    if (this.isTransitioning) return Promise.reject();
     return new Promise(resolve => {
       if (this.texture) this.texture.dispose();
       if (this.materialTexture) this.materialTexture.dispose();
