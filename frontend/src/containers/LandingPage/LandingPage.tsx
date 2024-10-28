@@ -66,9 +66,6 @@ const LandingPage: React.FunctionComponent<LandingPageProps> = () => {
           {isReady && (
             <motion.div {...pageMotionProps}>
               <Styled.WrapperInner>
-                <Styled.Logo>
-                  <img src={SPRITES.ZodiacLogo} alt="ZodiacAR logo" />
-                </Styled.Logo>
                 <Styled.Header {...landingPageHeaderMotionProps}>
                   <h1
                     dangerouslySetInnerHTML={{
@@ -81,6 +78,9 @@ const LandingPage: React.FunctionComponent<LandingPageProps> = () => {
                     }}
                   />
                 </Styled.Header>
+                <Styled.Hero>
+                  <img src={SPRITES.HeroImage} alt="ZodiacAR" />
+                </Styled.Hero>
                 <motion.div {...landingPageStartButtonMotionProps}>
                   <Button label={copy.landing.cta} onClick={onCTA} />
                 </motion.div>

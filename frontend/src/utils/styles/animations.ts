@@ -23,18 +23,19 @@ export const pageMotionProps = {
   initial: { opacity: 0, x: '16rem' },
   animate: { opacity: 1, x: '0rem' },
   exit: { opacity: 0, x: '-16rem' },
-  transition: { duration: 0.2 }
+  transition: { duration: 0.5 }
 };
 
 export const landingPageHeaderMotionProps = {
-  initial: { y: '40%', opacity: 0 },
+  initial: { y: '-40%', opacity: 0 },
   animate: { y: '0%', opacity: 1 },
   transition: { duration: 0.8, ease: 'easeInOut', delay: 0.5 },
 };
 
 export const landingPageStartButtonMotionProps = {
-  ...landingPageHeaderMotionProps,
-  transition: { ...landingPageHeaderMotionProps.transition, delay: 1 },
+  initial: { y: '40%', opacity: 0 },
+  animate: { y: '0%', opacity: 1 },
+  transition: { duration: 0.8, ease: 'easeInOut', delay: 1 },
 };
 
 export const arPageFaceTrackerMotionProps = {
