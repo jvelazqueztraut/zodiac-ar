@@ -1,4 +1,11 @@
 import { InputImage, NormalizedLandmarkList } from '@mediapipe/face_mesh';
+import {
+  BloomEffect,
+  EffectComposer,
+  EffectPass,
+  RenderPass,
+  VignetteEffect,
+} from 'postprocessing';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
@@ -34,6 +41,7 @@ export default class SceneManager {
   debug: boolean;
   useOrtho: boolean;
   renderer: THREE.WebGLRenderer;
+  composer: EffectComposer;
   fov: number;
   camera: THREE.PerspectiveCamera | THREE.OrthographicCamera;
   controls: OrbitControls;
@@ -57,9 +65,14 @@ export default class SceneManager {
       alpha: true,
       preserveDrawingBuffer: true, // to allow snapshot
       outputEncoding: THREE.sRGBEncoding,
+      powerPreference: 'high-performance',
+      antialias: false,
+      stencil: false,
+      depth: false,
     });
     this.fov = 63;
     this.buildCamera();
+    this.buildPostProcessing();
     this.buildControls();
     this.buildVideoBg();
     this.buildFaceMask();
@@ -100,6 +113,27 @@ export default class SceneManager {
       this.controls = new OrbitControls(this.camera, this.renderer.domElement);
       this.controls.update();
     }
+  }
+
+  buildPostProcessing() {
+    this.composer = new EffectComposer(this.renderer);
+    const renderPass = new RenderPass(this.scene, this.camera);
+    const vignetteEffectPass = new EffectPass(
+      this.camera,
+      new VignetteEffect({
+        offset: 0.5,
+        darkness: 0.7,
+      })
+    );
+    const bloomEffectPass = new EffectPass(
+      this.camera,
+      new BloomEffect({
+        luminanceThreshold: 0.5,
+      })
+    );
+    this.composer.addPass(renderPass);
+    this.composer.addPass(vignetteEffectPass);
+    this.composer.addPass(bloomEffectPass);
   }
 
   buildCamera() {
@@ -243,7 +277,8 @@ export default class SceneManager {
     this.animals.update(this.clock.getDelta());
 
     // render scene
-    this.renderer.render(this.scene, this.camera);
+    // this.renderer.render(this.scene, this.camera);
+    this.composer.render();
   }
 
   resize(videoWidth: number, videoHeight: number) {
@@ -251,11 +286,12 @@ export default class SceneManager {
     this.videoHeight = videoHeight;
   }
 
-  onLandmarks(image: InputImage, landmarks: NormalizedLandmarkList) {
-    if (image && landmarks) {
-      this.videoBg.setImage(image);
-      this.faceMask.updateLandmarks(landmarks);
-      this.animals.updateLandmarks(landmarks);
-    }
+  onFrame(image: InputImage) {
+    this.videoBg.setImage(image);
+  }
+
+  onLandmarks(landmarks: NormalizedLandmarkList) {
+    this.faceMask.updateLandmarks(landmarks);
+    this.animals.updateLandmarks(landmarks);
   }
 }
