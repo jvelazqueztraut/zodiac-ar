@@ -59,7 +59,7 @@ const ARPage: React.FunctionComponent<ARPageProps> = ({ initialCopy }) => {
   };
 
   const onClose = () => {
-    //faceTrackerRef.current?.stop();
+    faceTrackerRef.current?.close();
     router.push(ROUTES.HOME);
   };
 

@@ -23,6 +23,7 @@ export interface FaceTrackerProps {
 
 export interface CanCapture {
   capture: () => void;
+  close: () => void;
 }
 
 const defaultProps: Partial<FaceTrackerProps> = {};
@@ -32,6 +33,9 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
     useImperativeHandle(ref, () => ({
       capture() {
         takeSnapshot();
+      },
+      close() {
+        stopWebcam();
       },
     }));
 
@@ -254,6 +258,10 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
     };
 
     const animate = () => {
+      if (!canvas2DRef.current) {
+        console.log('Invalid canvas, stop scene animation.');
+        return;
+      }
       requestAnimationFrame(animate);
       sceneRef.current.resize(
         canvas2DRef.current.width,
