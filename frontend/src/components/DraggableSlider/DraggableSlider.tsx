@@ -15,10 +15,12 @@ import {
 
 interface DraggableSliderProps {
   onAnchorSelect: (anchorIndex: number) => void;
+  motion?: any;
 }
 
 const DraggableSlider: React.FC<DraggableSliderProps> = ({
   onAnchorSelect,
+  motion,
 }) => {
   const [userDrag, setUserDrag] = useState(false);
   const [sliderPosition, setSliderPosition] = useState({ x: 50, y: 50 });
@@ -111,7 +113,7 @@ const DraggableSlider: React.FC<DraggableSliderProps> = ({
 
   return (
     <AnimatePresence>
-      <Styled.Wrapper>
+      <Styled.Wrapper {...motion}>
         {anchors.map((anchor, index) => (
           <SliderAnchor
             key={index}

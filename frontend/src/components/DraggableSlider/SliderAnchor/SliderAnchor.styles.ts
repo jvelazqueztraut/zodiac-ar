@@ -8,8 +8,8 @@ export const Wrapper = styled.div<{
   left: ${props => props.left}%;
   top: ${props => props.top}%;
   transform: translate(-50%, -50%);
-  width: 100px;
-  height: 100px;
+  width: 150px;
+  height: 150px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -28,9 +28,9 @@ export const Icon = styled.img<{
 export const Text = styled.div<{
   visible: boolean;
 }>`
-  margin-top: 5px;
-  font-size: 12px;
-  color: white;
+  margin-top: -25px;
+  font-size: 14rem;
+  color: black;
   text-align: center;
   visibility: ${props => (props.visible ? 'visible' : 'hidden')};
 `;

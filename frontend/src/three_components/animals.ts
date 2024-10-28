@@ -1,8 +1,11 @@
 import { NormalizedLandmarkList } from '@mediapipe/face_mesh';
+import { animate } from 'framer-motion';
 import * as THREE from 'three';
 
-import { scaleLandmark } from '../facemesh/landmarks_helpers';
+import { scaleLandmark } from '../utils/facemesh/landmarks_helpers';
 import { loadGLTFModel } from './models_helpers';
+
+import { FilterTransitionDuration } from 'constants/ar-constants';
 
 const NUM_ANIMALS = 12;
 const MODEL_SCALE = 0.15;
@@ -64,56 +67,45 @@ export default class Animals {
 
   transitionOut(): Promise<void> {
     if (!this.enabled) return Promise.resolve();
+    if (this.isTransitioning) return Promise.reject();
     return new Promise(resolve => {
       this.isTransitioning = true;
-      const scaleDown = () => {
-        this.transitionScale -= 0.1;
-        if (this.transitionScale > 0) {
-          requestAnimationFrame(scaleDown);
-        } else {
-          this.transitionScale = 0;
-          this.isTransitioning = false;
+      animate(1, 0, {
+        duration: FilterTransitionDuration,
+        onUpdate: latest => {
+          this.transitionScale = latest;
+        },
+        onComplete: () => {
           this.removeAnimals();
+          this.isTransitioning = false;
           this.enabled = false;
           console.log('Animals transition out complete');
           resolve();
-        }
-      };
-      scaleDown();
+        },
+      });
     });
   }
 
   transitionIn(): Promise<void> {
-    if (!this.enabled) return Promise.reject();
+    if (!this.enabled || this.isTransitioning) return Promise.reject();
     return new Promise(resolve => {
       this.isTransitioning = true;
-      const scaleUp = () => {
-        this.transitionScale += 0.1;
-        if (this.transitionScale < 1) {
-          requestAnimationFrame(scaleUp);
-        } else {
-          this.transitionScale = 1;
+      animate(0, 1, {
+        duration: FilterTransitionDuration,
+        onUpdate: latest => {
+          this.transitionScale = latest;
+        },
+        onComplete: () => {
           this.isTransitioning = false;
           console.log('Animals transition in complete');
           resolve();
-        }
-      };
-      scaleUp();
+        },
+      });
     });
   }
 
-  updateDimensions(width: number, height: number) {
-    this.width = width;
-    this.height = height;
-    this.needsUpdate = true;
-  }
-
-  updateLandmarks(landmarks: NormalizedLandmarkList) {
-    this.landmarks = landmarks;
-    this.needsUpdate = true;
-  }
-
   updateAssets(name: string): Promise<void> {
+    if (this.isTransitioning) return Promise.reject();
     return new Promise(resolve => {
       for (let i = 0; i < this.objects.length; i++) {
         this.objects[i].traverse(child => {
@@ -131,6 +123,17 @@ export default class Animals {
         resolve();
       });
     });
+  }
+
+  updateDimensions(width: number, height: number) {
+    this.width = width;
+    this.height = height;
+    this.needsUpdate = true;
+  }
+
+  updateLandmarks(landmarks: NormalizedLandmarkList) {
+    this.landmarks = landmarks;
+    this.needsUpdate = true;
   }
 
   updateAnimals(delta: number) {

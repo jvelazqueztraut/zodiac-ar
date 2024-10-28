@@ -9,7 +9,7 @@ export const Wrapper = styled(motion.button)`
   align-items: center;
   justify-content: center;
   gap: 10rem;
-  background-color: ${colors.blueRibbon};
+  background-color: ${colors.black};
   color: ${colors.white};
   padding-inline: 30rem;
   text-transform: uppercase;

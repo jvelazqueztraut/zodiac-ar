@@ -44,9 +44,8 @@ export const WrapperInner = styled.div`
   }
 `;
 
-export const Logo = styled.div`
+export const Hero = styled.div`
   z-index: 1;
-  margin-top: 75rem;
   width: 75%;
   img {
     width: 100%;

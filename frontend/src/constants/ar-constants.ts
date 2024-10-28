@@ -23,3 +23,11 @@ export const FilterTypeAssets = {
   [FilterTypes.Moon]: 'sagittarius',
   [FilterTypes.Rising]: 'taurus',
 };
+
+export const FilterHueSaturationMapping = {
+  piscis: { hue: 0.25, saturation: 0.4 },
+  sagittarius: { hue: 0.8, saturation: 0.4 },
+  taurus: { hue: -0.3, saturation: 0.6 },
+};
+
+export const FilterTransitionDuration = 1;

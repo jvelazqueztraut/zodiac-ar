@@ -7,10 +7,9 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import SceneManager from 'three_components/scene_manager';
 
 import { transformLandmarks } from 'utils/facemesh/landmarks_helpers';
-import { fadeMotionProps } from 'utils/styles/animations';
-import SceneManager from 'utils/three_components/scene_manager';
 
 import * as Styled from './FaceTracker.styles';
 
@@ -19,19 +18,26 @@ import { FilterTypes } from 'constants/ar-constants';
 export interface FaceTrackerProps {
   isVisible: boolean;
   selectedFilter: FilterTypes | null;
+  setIsReady: (isReady: boolean) => void;
+  setIsCapturing: (isCapturing: boolean) => void;
+  motion?: any;
 }
 
 export interface CanCapture {
   capture: () => void;
+  close: () => void;
 }
 
 const defaultProps: Partial<FaceTrackerProps> = {};
 
 const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
-  ({ isVisible, selectedFilter }, ref) => {
+  ({ isVisible, selectedFilter, setIsReady, setIsCapturing, motion }, ref) => {
     useImperativeHandle(ref, () => ({
       capture() {
         takeSnapshot();
+      },
+      close() {
+        stopWebcam();
       },
     }));
 
@@ -68,6 +74,7 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
       if (detectionRunning) {
         setCanvasDimensions();
         initializeScene();
+        setIsReady(true);
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [detectionRunning]);
@@ -245,6 +252,11 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
     const takeSnapshot = () => {
       if (!canvas3DRef.current) return;
       console.log('Taking snapshot');
+      // TODO Remove fake timeout for loading
+      setIsCapturing(true);
+      setTimeout(() => {
+        setIsCapturing(false);
+      }, 1000);
       // Convert the canvas content to a PNG image and trigger a download
       const dataUrl = canvas3DRef.current.toDataURL('image/png');
       const link = document.createElement('a');
@@ -254,6 +266,10 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
     };
 
     const animate = () => {
+      if (!canvas2DRef.current) {
+        console.log('Invalid canvas, stop scene animation.');
+        return;
+      }
       requestAnimationFrame(animate);
       sceneRef.current.resize(
         canvas2DRef.current.width,
@@ -288,7 +304,7 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
     return (
       <AnimatePresence>
         {isVisible && (
-          <Styled.Wrapper {...fadeMotionProps}>
+          <Styled.Wrapper {...motion}>
             {/* Video element for webcam feed */}
             <video ref={videoRef} id="webcam" autoPlay playsInline></video>
             {/* Canvas element for 3d scene */}

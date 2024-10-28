@@ -1,16 +1,10 @@
 import { InputImage, NormalizedLandmarkList } from '@mediapipe/face_mesh';
-import {
-  BloomEffect,
-  EffectComposer,
-  EffectPass,
-  RenderPass,
-  VignetteEffect,
-} from 'postprocessing';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 import Animals from './animals';
 import FaceMask from './face_mask';
+import PostProcessing from './postprocessing';
 import VideoBackground from './video_bg';
 
 import { FilterTypeAssets, FilterTypes } from 'constants/ar-constants';
@@ -32,7 +26,8 @@ const cameraDistance = (height: number, fov: number) => {
  *
  * 1) animate inside request animation frame
  * 2) resize inside request animation frame
- * 3) onLandmarks on recieving new face landmarks
+ * 3) onFrame on recieving new image
+ * 4) onLandmarks on recieving new face landmarks
  *
  */
 export default class SceneManager {
@@ -41,7 +36,7 @@ export default class SceneManager {
   debug: boolean;
   useOrtho: boolean;
   renderer: THREE.WebGLRenderer;
-  composer: EffectComposer;
+  postprocessing: PostProcessing;
   fov: number;
   camera: THREE.PerspectiveCamera | THREE.OrthographicCamera;
   controls: OrbitControls;
@@ -116,24 +111,11 @@ export default class SceneManager {
   }
 
   buildPostProcessing() {
-    this.composer = new EffectComposer(this.renderer);
-    const renderPass = new RenderPass(this.scene, this.camera);
-    const vignetteEffectPass = new EffectPass(
-      this.camera,
-      new VignetteEffect({
-        offset: 0.5,
-        darkness: 0.7,
-      })
+    this.postprocessing = new PostProcessing(
+      this.scene,
+      this.renderer,
+      this.camera
     );
-    const bloomEffectPass = new EffectPass(
-      this.camera,
-      new BloomEffect({
-        luminanceThreshold: 0.5,
-      })
-    );
-    this.composer.addPass(renderPass);
-    this.composer.addPass(vignetteEffectPass);
-    this.composer.addPass(bloomEffectPass);
   }
 
   buildCamera() {
@@ -213,16 +195,31 @@ export default class SceneManager {
       Promise.all([
         this.animals.transitionOut(),
         this.faceMask.transitionOut(),
-      ]).then(() => {
-        const assetName = FilterTypeAssets[selectedFilter];
-        Promise.all([
-          this.animals.updateAssets(assetName),
-          this.faceMask.updateAssets(assetName),
-        ]).then(() => {
-          this.animals.transitionIn();
-          this.faceMask.transitionIn();
+        this.postprocessing.transitionOut(),
+      ])
+        .then(() => {
+          const assetName = FilterTypeAssets[selectedFilter];
+          Promise.all([
+            this.animals.updateAssets(assetName),
+            this.faceMask.updateAssets(assetName),
+            this.postprocessing.updateEffects(assetName),
+          ])
+            .then(() => {
+              Promise.all([
+                this.animals.transitionIn(),
+                this.faceMask.transitionIn(),
+                this.postprocessing.transitionIn(),
+              ]).catch(() => {
+                console.warn('Failed to transition in');
+              });
+            })
+            .catch(() => {
+              console.warn('Failed to update assets');
+            });
+        })
+        .catch(() => {
+          console.warn('Failed to transition out');
         });
-      });
     }
   }
 
@@ -265,6 +262,11 @@ export default class SceneManager {
         this.renderer.domElement.height
       );
 
+      this.postprocessing.setSize(
+        this.renderer.domElement.width,
+        this.renderer.domElement.height
+      );
+
       this.updateCamera();
     }
     // update video background
@@ -278,7 +280,7 @@ export default class SceneManager {
 
     // render scene
     // this.renderer.render(this.scene, this.camera);
-    this.composer.render();
+    this.postprocessing.render();
   }
 
   resize(videoWidth: number, videoHeight: number) {

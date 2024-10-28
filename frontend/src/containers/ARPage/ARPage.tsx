@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { GetStaticProps } from 'next';
-import { Router } from 'next/router';
+import router, { Router } from 'next/router';
 import React, { useRef, useState } from 'react';
 
 import Button from 'components/Button/Button';
@@ -9,9 +9,15 @@ import DraggableSlider from 'components/DraggableSlider/DraggableSlider';
 import FaceTracker, { CanCapture } from 'components/FaceTracker/FaceTracker';
 import { getCopy } from 'store/copy.data';
 import { CopyStoreType } from 'store/copy.types';
+import { ReactComponent as SvgClose } from 'svgs/close.svg';
 import { ISR_TIMEOUT } from 'utils/config';
-import { Pages } from 'utils/routes';
-import { pageMotionProps } from 'utils/styles/animations';
+import { Pages, ROUTES } from 'utils/routes';
+import {
+  arPageCaptureButtonMotionProps,
+  arPageDraggableSliderMotionProps,
+  arPageFaceTrackerMotionProps,
+  pageMotionProps,
+} from 'utils/styles/animations';
 
 import * as Styled from './ARPage.styles';
 
@@ -47,6 +53,8 @@ interface ARPageProps {
 
 const ARPage: React.FunctionComponent<ARPageProps> = ({ initialCopy }) => {
   const faceTrackerRef = useRef<CanCapture>(null);
+  const [isReady, setIsReady] = useState(false);
+  const [isCapturing, setIsCapturing] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState<FilterTypes | null>(
     null
   );
@@ -57,20 +65,44 @@ const ARPage: React.FunctionComponent<ARPageProps> = ({ initialCopy }) => {
     setSelectedFilter(filterIndex);
   };
 
+  const onClose = () => {
+    faceTrackerRef.current?.close();
+    router.push(ROUTES.HOME);
+  };
+
   return (
     <motion.div {...pageMotionProps}>
-      <Styled.Wrapper>
-        <FaceTracker
-          ref={faceTrackerRef}
-          isVisible={true}
-          selectedFilter={selectedFilter}
-        />
-        <DraggableSlider onAnchorSelect={handleFilterSelect} />
-        <Button
-          label={initialCopy.ar.cta}
-          onClick={faceTrackerRef.current?.capture}
-        />
-      </Styled.Wrapper>
+      <Styled.CloseIcon onClick={onClose}>
+        <SvgClose />
+      </Styled.CloseIcon>
+      <AnimatePresence>
+        <Styled.Wrapper>
+          <motion.div {...arPageFaceTrackerMotionProps}>
+            <FaceTracker
+              ref={faceTrackerRef}
+              isVisible={true}
+              setIsReady={setIsReady}
+              setIsCapturing={setIsCapturing}
+              selectedFilter={selectedFilter}
+            />
+          </motion.div>
+          {isReady && (
+            <>
+              <motion.div {...arPageDraggableSliderMotionProps}>
+                <DraggableSlider onAnchorSelect={handleFilterSelect} />
+              </motion.div>
+              <motion.div {...arPageCaptureButtonMotionProps}>
+                <Button
+                  {...arPageCaptureButtonMotionProps}
+                  label={initialCopy.ar.cta}
+                  isLoading={isCapturing}
+                  onClick={faceTrackerRef.current?.capture}
+                />
+              </motion.div>
+            </>
+          )}
+        </Styled.Wrapper>
+      </AnimatePresence>
     </motion.div>
   );
 };
