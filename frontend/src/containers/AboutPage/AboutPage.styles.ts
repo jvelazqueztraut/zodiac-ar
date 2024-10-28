@@ -27,25 +27,9 @@ export const Card = styled.a`
     border-color: ${colors.blueRibbon};
   `)}
 
-  h3 {
-    margin: 0 0 10rem 0;
-    ${({ theme: { locale } }) => setTypography('heading3', locale)}
-  }
-
   p {
     margin: 0;
     ${({ theme: { locale } }) => setTypography('body1', locale)}
-  }
-`;
-
-export const Description = styled.p`
-  text-align: center;
-
-  code {
-    background: ${colors.alabaster};
-    border-radius: 6rem;
-    padding: 8rem;
-    ${({ theme: { locale } }) => setTypography('small', locale)}
   }
 `;
 
@@ -78,9 +62,9 @@ export const Main = styled.main`
   align-items: center;
 `;
 
-export const Title = styled.h1`
+export const Title = styled.h2`
   margin: 0;
-  ${({ theme: { locale } }) => setTypography('heading1', locale)}
+  ${({ theme: { locale } }) => setTypography('heading2', locale)}
   text-align: center;
 
   a {
@@ -91,4 +75,15 @@ export const Title = styled.h1`
   ${hover(`
     text-decoration: underline;
   `)}
+`;
+
+export const Description = styled.p`
+  text-align: center;
+
+  code {
+    background: ${colors.alabaster};
+    border-radius: 6rem;
+    padding: 8rem;
+    ${({ theme: { locale } }) => setTypography('body1', locale)}
+  }
 `;

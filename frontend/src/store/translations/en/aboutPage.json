@@ -1,0 +1,6 @@
+{
+  "title": "Zodiac AR is a WebAR demo project using <a href=https://github.com/google-ai-edge/mediapipe>Mediapipe</a> and <a href=https://threejs.org/>Three.js</a>",
+  "description": "Developed by Javier Velazquez Traut</br>",
+  "sourceCode": "Source code is <a href=https://github.com/jvelazqueztraut/zodiac-ar>here</a>",
+  "back": "Go back"
+}

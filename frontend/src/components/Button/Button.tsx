@@ -8,7 +8,7 @@ export interface ButtonProps {
   onClick: () => void;
   label?: string;
   className?: string;
-  type?: 'button' | 'submit' | 'reset';
+  type?: 'default' | 'about';
   disabled?: boolean;
   isLoading?: boolean;
   hasShadow?: boolean;
@@ -19,7 +19,7 @@ const Button: React.FC<ButtonProps> = ({
   onClick,
   label,
   className,
-  type = 'button',
+  type = 'default',
   disabled = false,
   isLoading = false,
   hasShadow = false,
