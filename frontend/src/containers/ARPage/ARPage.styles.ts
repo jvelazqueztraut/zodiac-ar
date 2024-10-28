@@ -27,3 +27,14 @@ export const Wrapper = styled.div`
     bottom: 50rem;
   }
 `;
+
+export const CloseIcon = styled.div`
+  svg {
+    width: 30rem;
+  }
+  padding: 20rem;
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 10;
+`;

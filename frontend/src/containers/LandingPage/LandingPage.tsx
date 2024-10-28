@@ -53,6 +53,10 @@ const LandingPage: React.FunctionComponent<LandingPageProps> = () => {
   const { copy } = useCopyStore();
   const [isReady, setIsReady] = useState(false);
 
+  const onCTA = () => {
+    router.push(ROUTES.AR, null, { scroll: false });
+  };
+
   return (
     <motion.div {...pageMotionProps}>
       <Styled.Wrapper>
@@ -78,12 +82,7 @@ const LandingPage: React.FunctionComponent<LandingPageProps> = () => {
                   />
                 </Styled.Header>
                 <motion.div {...landingPageStartButtonMotionProps}>
-                  <Button
-                    label={copy.landing.cta}
-                    onClick={() => {
-                      router.push(ROUTES.AR, null, { scroll: false });
-                    }}
-                  />
+                  <Button label={copy.landing.cta} onClick={onCTA} />
                 </motion.div>
               </Styled.WrapperInner>
             </motion.div>

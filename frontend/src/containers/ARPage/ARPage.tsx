@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/react';
 import { motion } from 'framer-motion';
 import { GetStaticProps } from 'next';
-import { Router } from 'next/router';
+import router, { Router } from 'next/router';
 import React, { useRef, useState } from 'react';
 
 import Button from 'components/Button/Button';
@@ -9,8 +9,9 @@ import DraggableSlider from 'components/DraggableSlider/DraggableSlider';
 import FaceTracker, { CanCapture } from 'components/FaceTracker/FaceTracker';
 import { getCopy } from 'store/copy.data';
 import { CopyStoreType } from 'store/copy.types';
+import { ReactComponent as SvgClose } from 'svgs/close.svg';
 import { ISR_TIMEOUT } from 'utils/config';
-import { Pages } from 'utils/routes';
+import { Pages, ROUTES } from 'utils/routes';
 import { pageMotionProps } from 'utils/styles/animations';
 
 import * as Styled from './ARPage.styles';
@@ -57,8 +58,16 @@ const ARPage: React.FunctionComponent<ARPageProps> = ({ initialCopy }) => {
     setSelectedFilter(filterIndex);
   };
 
+  const onClose = () => {
+    //faceTrackerRef.current?.stop();
+    router.push(ROUTES.HOME);
+  };
+
   return (
     <motion.div {...pageMotionProps}>
+      <Styled.CloseIcon onClick={onClose}>
+        <SvgClose />
+      </Styled.CloseIcon>
       <Styled.Wrapper>
         <FaceTracker
           ref={faceTrackerRef}
