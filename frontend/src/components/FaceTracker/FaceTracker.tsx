@@ -37,8 +37,11 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
 
     // Refs to the video and canvas elements
     const videoRef = useRef<HTMLVideoElement | null>(null);
-    const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    const canvas3DRef = useRef<HTMLCanvasElement | null>(null);
     const sceneRef = useRef<SceneManager | null>(null);
+
+    // Aux canvas for cropping video
+    const canvas2DRef = useRef<HTMLCanvasElement | null>(null);
 
     // State for the FaceLandmarker, canvas context, and webcam status
     const [faceLandmarker, setFaceLandmarker] = useState<FaceLandmarker | null>(
@@ -150,13 +153,23 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
     // Function to initialize the canvas dimensions
     const setCanvasDimensions = () => {
       // Set canvas dimensions to video dimensions
-      if (canvasRef.current) {
-        canvasRef.current.width = videoRef.current.videoWidth; // Set canvas width to video width
-        canvasRef.current.height = videoRef.current.videoHeight; // Set canvas height to video height
+      if (canvas2DRef.current && canvas3DRef.current) {
+        // canvas2DRef.current.width = videoRef.current.videoWidth; // Set canvas width to video width
+        // canvas2DRef.current.height = videoRef.current.videoHeight; // Set canvas height to video height
+        canvas2DRef.current.width = window.innerWidth;
+        canvas2DRef.current.height = window.innerHeight;
         console.log(
-          'Canvas dimensions set:',
-          canvasRef.current.width,
-          canvasRef.current.height
+          'Canvas 2D dimensions set:',
+          canvas2DRef.current.width,
+          canvas2DRef.current.height
+        );
+        // Set Canvas 3D dimensions to cropped video dimensions
+        canvas3DRef.current.width = canvas2DRef.current.width; //canvas2DRef.current.width; // Set canvas width to video width
+        canvas3DRef.current.height = canvas2DRef.current.height; //canvas2DRef.current.height; // Set canvas height to video height
+        console.log(
+          'Canvas 3D dimensions set:',
+          canvas3DRef.current.width,
+          canvas3DRef.current.height
         );
       }
     };
@@ -164,7 +177,12 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
     // Function to continuously detect face landmarks in the video stream
     const detect = async () => {
       // Check if the necessary elements and states are ready for detection
-      if (!faceLandmarker || !videoRef.current || !detectionRunning) {
+      if (
+        !faceLandmarker ||
+        !videoRef.current ||
+        !canvas2DRef.current ||
+        !detectionRunning
+      ) {
         console.log('Detection prerequisites not met or detection stopped.');
         return;
       }
@@ -173,23 +191,46 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
       if (
         videoRef.current.videoWidth === 0 ||
         videoRef.current.videoHeight === 0 ||
-        canvasRef.current.width === 0 ||
-        canvasRef.current.height === 0
+        canvas2DRef.current.width === 0 ||
+        canvas2DRef.current.height === 0
       ) {
-        console.log('Invalid video or canvas dimensions.');
+        console.log('Invalid video dimensions.');
         return;
       }
 
+      // Adjust the video dimensions to fit the canvas
+      let offsetX = 0;
+      let offsetY = 0;
+      let scale = 1;
+      if (
+        videoRef.current.videoWidth / videoRef.current.videoHeight >
+        innerWidth / innerHeight
+      ) {
+        scale = innerHeight / videoRef.current.videoHeight;
+        offsetX = (innerWidth - videoRef.current.videoWidth * scale) / 2;
+      } else {
+        scale = innerWidth / videoRef.current.videoWidth;
+        offsetY = (innerHeight - videoRef.current.videoHeight * scale) / 2;
+      }
+      const auxCanvasCtx = canvas2DRef.current.getContext('2d');
+      auxCanvasCtx.drawImage(
+        videoRef.current,
+        offsetX,
+        offsetY,
+        videoRef.current.videoWidth * scale,
+        videoRef.current.videoHeight * scale
+      );
+
       // Run the face landmark detection for the current video frame
       const results = faceLandmarker.detectForVideo(
-        videoRef.current,
+        canvas2DRef.current,
         performance.now()
       );
 
       // If landmarks are detected, send them to scene manager
       if (results.faceLandmarks && results.faceLandmarks.length > 0) {
         sceneRef.current.onLandmarks(
-          videoRef.current,
+          canvas2DRef.current,
           transformLandmarks(results.faceLandmarks[0])
         );
       } else {
@@ -204,10 +245,10 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
 
     // Function to take a snapshot of the current video frame and landmarks
     const takeSnapshot = () => {
-      if (!canvasRef.current) return;
+      if (!canvas3DRef.current) return;
       console.log('Taking snapshot');
       // Convert the canvas content to a PNG image and trigger a download
-      const dataUrl = canvasRef.current.toDataURL('image/png');
+      const dataUrl = canvas3DRef.current.toDataURL('image/png');
       const link = document.createElement('a');
       link.href = dataUrl;
       link.download = 'snapshot.png'; // Set the filename for the snapshot
@@ -217,8 +258,8 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
     const animate = () => {
       requestAnimationFrame(animate);
       sceneRef.current.resize(
-        videoRef.current.clientWidth,
-        videoRef.current.clientHeight
+        canvas2DRef.current.width,
+        canvas2DRef.current.height
       );
       sceneRef.current.animate();
     };
@@ -226,7 +267,7 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
     const initializeScene = () => {
       const useOrtho = true;
       const debug = false;
-      sceneRef.current = new SceneManager(canvasRef.current, debug, useOrtho);
+      sceneRef.current = new SceneManager(canvas3DRef.current, debug, useOrtho);
 
       animate();
     };
@@ -252,10 +293,12 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
           <Styled.Wrapper {...fadeMotionProps}>
             {/* Video element for webcam feed */}
             <video ref={videoRef} id="webcam" autoPlay playsInline></video>
-            {/* Canvas element for drawing face landmarks */}
-            <canvas ref={canvasRef}></canvas>
+            {/* Aux canvas element for cropping video */}
+            {/* Canvas element for 3d scene */}
+            <canvas ref={canvas3DRef}></canvas>
           </Styled.Wrapper>
         )}
+        <Styled.HiddenCanvas ref={canvas2DRef} />
       </AnimatePresence>
     );
   }
