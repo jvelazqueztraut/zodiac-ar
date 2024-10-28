@@ -4,6 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 import Animals from './animals';
 import FaceMask from './face_mask';
+import VideoBackground from './video_bg';
 
 import { FilterTypeAssets, FilterTypes } from 'constants/ar-constants';
 
@@ -38,6 +39,7 @@ export default class SceneManager {
   controls: OrbitControls;
   faceMask: FaceMask;
   animals: Animals;
+  videoBg: VideoBackground;
   videoWidth: number;
   videoHeight: number;
   clock: THREE.Clock;
@@ -53,15 +55,27 @@ export default class SceneManager {
       canvas: this.canvas,
       devicePixelRation: window.devicePixelRatio || 1,
       alpha: true,
+      preserveDrawingBuffer: true, // to allow snapshot
+      outputEncoding: THREE.sRGBEncoding,
     });
     this.fov = 63;
     this.buildCamera();
     this.buildControls();
+    this.buildVideoBg();
     this.buildFaceMask();
     this.buildAnimals();
     this.addLights();
 
     this.currentFilter = null;
+  }
+
+  buildVideoBg() {
+    // video background for canvas
+    this.videoBg = new VideoBackground(
+      this.scene,
+      this.renderer.domElement.width,
+      this.renderer.domElement.height
+    );
   }
 
   buildFaceMask() {
@@ -211,8 +225,16 @@ export default class SceneManager {
         this.renderer.domElement.height
       );
 
+      // update video width and height
+      this.videoBg.updateDimensions(
+        this.renderer.domElement.width,
+        this.renderer.domElement.height
+      );
+
       this.updateCamera();
     }
+    // update video background
+    this.videoBg.update();
 
     // update faces mask
     this.faceMask.update();
@@ -231,7 +253,7 @@ export default class SceneManager {
 
   onLandmarks(image: InputImage, landmarks: NormalizedLandmarkList) {
     if (image && landmarks) {
-      // this.videoBg.setImage(image);
+      this.videoBg.setImage(image);
       this.faceMask.updateLandmarks(landmarks);
       this.animals.updateLandmarks(landmarks);
     }

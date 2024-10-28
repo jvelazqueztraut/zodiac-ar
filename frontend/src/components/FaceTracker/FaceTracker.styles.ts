@@ -34,3 +34,7 @@ export const Wrapper = styled(motion.div)`
     min-height: 100%;
   }
 `;
+
+export const HiddenCanvas = styled.canvas`
+  display: none;
+`;

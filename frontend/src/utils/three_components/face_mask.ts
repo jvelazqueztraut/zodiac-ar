@@ -62,7 +62,7 @@ export default class FaceMask {
     // create faces
     const geometry = makeGeometry(this.landmarks);
     this.faceOccluder = new THREE.Mesh(geometry, this.materialOccluder);
-    this.faceOccluder.renderOrder = 0; // important to make occluding work
+    this.faceOccluder.renderOrder = 1; // important to make occluding work
     this.faceOccluder.position.set(0, 0, 0);
     this.faceOccluder.scale.set(this.width, this.height, this.width);
     this.scene.add(this.faceOccluder);
