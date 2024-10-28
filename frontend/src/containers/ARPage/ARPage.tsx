@@ -54,6 +54,7 @@ interface ARPageProps {
 const ARPage: React.FunctionComponent<ARPageProps> = ({ initialCopy }) => {
   const faceTrackerRef = useRef<CanCapture>(null);
   const [isReady, setIsReady] = useState(false);
+  const [isCapturing, setIsCapturing] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState<FilterTypes | null>(
     null
   );
@@ -81,6 +82,7 @@ const ARPage: React.FunctionComponent<ARPageProps> = ({ initialCopy }) => {
               ref={faceTrackerRef}
               isVisible={true}
               setIsReady={setIsReady}
+              setIsCapturing={setIsCapturing}
               selectedFilter={selectedFilter}
             />
           </motion.div>
@@ -93,6 +95,7 @@ const ARPage: React.FunctionComponent<ARPageProps> = ({ initialCopy }) => {
                 <Button
                   {...arPageCaptureButtonMotionProps}
                   label={initialCopy.ar.cta}
+                  isLoading={isCapturing}
                   onClick={faceTrackerRef.current?.capture}
                 />
               </motion.div>

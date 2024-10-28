@@ -19,6 +19,7 @@ export interface FaceTrackerProps {
   isVisible: boolean;
   selectedFilter: FilterTypes | null;
   setIsReady: (isReady: boolean) => void;
+  setIsCapturing: (isCapturing: boolean) => void;
   motion?: any;
 }
 
@@ -30,7 +31,7 @@ export interface CanCapture {
 const defaultProps: Partial<FaceTrackerProps> = {};
 
 const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
-  ({ isVisible, selectedFilter, setIsReady, motion }, ref) => {
+  ({ isVisible, selectedFilter, setIsReady, setIsCapturing, motion }, ref) => {
     useImperativeHandle(ref, () => ({
       capture() {
         takeSnapshot();
@@ -251,6 +252,11 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
     const takeSnapshot = () => {
       if (!canvas3DRef.current) return;
       console.log('Taking snapshot');
+      // TODO Remove fake timeout for loading
+      setIsCapturing(true);
+      setTimeout(() => {
+        setIsCapturing(false);
+      }, 1000);
       // Convert the canvas content to a PNG image and trigger a download
       const dataUrl = canvas3DRef.current.toDataURL('image/png');
       const link = document.createElement('a');
