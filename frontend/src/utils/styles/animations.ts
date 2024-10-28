@@ -37,6 +37,22 @@ export const landingPageStartButtonMotionProps = {
   transition: { ...landingPageHeaderMotionProps.transition, delay: 1 },
 };
 
+export const arPageFaceTrackerMotionProps = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  transition: { duration: 2, ease: 'easeInOut' },
+};
+
+export const arPageDraggableSliderMotionProps = {
+  initial: { scale: 0 },
+  animate: { scale: 1 },
+  transition: { duration: 0.8, ease: 'easeInOut', delay: 0.5 },
+};
+
+export const arPageCaptureButtonMotionProps = {
+  ...landingPageStartButtonMotionProps,
+};
+
 export const getBannerMotionProps = (from: 'top' | 'bottom') => ({
   initial: { opacity: 0, y: `${(from === 'top' ? -1 : 1) * 50}%` },
   animate: { opacity: 1, y: '0%' },

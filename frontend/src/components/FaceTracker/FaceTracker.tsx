@@ -10,7 +10,6 @@ import React, {
 import SceneManager from 'three_components/scene_manager';
 
 import { transformLandmarks } from 'utils/facemesh/landmarks_helpers';
-import { fadeMotionProps } from 'utils/styles/animations';
 
 import * as Styled from './FaceTracker.styles';
 
@@ -19,6 +18,8 @@ import { FilterTypes } from 'constants/ar-constants';
 export interface FaceTrackerProps {
   isVisible: boolean;
   selectedFilter: FilterTypes | null;
+  setIsReady: (isReady: boolean) => void;
+  motion?: any;
 }
 
 export interface CanCapture {
@@ -29,7 +30,7 @@ export interface CanCapture {
 const defaultProps: Partial<FaceTrackerProps> = {};
 
 const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
-  ({ isVisible, selectedFilter }, ref) => {
+  ({ isVisible, selectedFilter, setIsReady, motion }, ref) => {
     useImperativeHandle(ref, () => ({
       capture() {
         takeSnapshot();
@@ -72,6 +73,7 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
       if (detectionRunning) {
         setCanvasDimensions();
         initializeScene();
+        setIsReady(true);
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [detectionRunning]);
@@ -296,7 +298,7 @@ const FaceTracker = forwardRef<CanCapture, FaceTrackerProps>(
     return (
       <AnimatePresence>
         {isVisible && (
-          <Styled.Wrapper {...fadeMotionProps}>
+          <Styled.Wrapper {...motion}>
             {/* Video element for webcam feed */}
             <video ref={videoRef} id="webcam" autoPlay playsInline></video>
             {/* Canvas element for 3d scene */}

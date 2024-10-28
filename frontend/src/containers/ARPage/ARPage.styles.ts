@@ -3,28 +3,20 @@ import styled from 'styled-components';
 import { setVh } from 'utils/styles/mixins';
 
 export const Wrapper = styled.div`
+  position: relative;
   height: ${setVh(100)};
-  display: flex;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  display: grid;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   padding: 20rem;
 
-  > h1 {
-    font-size: 25rem;
-  }
-
-  > p {
-    margin-top: 10rem;
-    text-align: center;
-  }
-
-  > button {
-    position: fixed;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    bottom: 50rem;
+  button {
+    justify-self: center;
+    width: 130rem;
+    bottom: 10rem;
   }
 `;
 

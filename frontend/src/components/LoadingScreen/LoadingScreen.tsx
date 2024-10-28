@@ -8,7 +8,7 @@ import * as Styled from './LoadingScreen.styles';
 
 export interface LoadingScreenProps {
   isVisible: boolean;
-  setIsReady: (boolean) => void;
+  setIsReady: (isReady: boolean) => void;
 }
 
 const defaultProps: Partial<LoadingScreenProps> = {};
