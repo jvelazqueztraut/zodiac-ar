@@ -89,7 +89,10 @@ const ARPage: React.FunctionComponent<ARPageProps> = ({ initialCopy }) => {
           {isReady && (
             <>
               <motion.div {...arPageDraggableSliderMotionProps}>
-                <DraggableSlider onAnchorSelect={handleFilterSelect} />
+                <DraggableSlider
+                  hint={initialCopy.ar.sliderHint}
+                  onAnchorSelect={handleFilterSelect}
+                />
               </motion.div>
               <motion.div {...arPageCaptureButtonMotionProps}>
                 <Button

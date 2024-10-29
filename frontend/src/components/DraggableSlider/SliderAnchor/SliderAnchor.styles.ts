@@ -32,5 +32,7 @@ export const Text = styled.div<{
   font-size: 14rem;
   color: black;
   text-align: center;
-  visibility: ${props => (props.visible ? 'visible' : 'hidden')};
+  text-shadow: 4px 4px 5px white;
+  opacity: ${props => (props.visible ? 1 : 0)};
+  transition: opacity 0.3s ease;
 `;

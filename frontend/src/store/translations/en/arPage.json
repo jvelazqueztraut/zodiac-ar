@@ -1,5 +1,6 @@
 {
   "title": "Zodiac AR",
   "body": "A simple web app that uses augmented reality to show you the constellations of the zodiac signs.",
-  "cta": "Capture"
+  "cta": "Capture",
+  "sliderHint": "Drag to enable sign filters"
 }

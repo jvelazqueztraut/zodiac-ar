@@ -23,3 +23,15 @@ export const Icon = styled.img`
   width: 100%;
   height: 100%;
 `;
+
+export const Text = styled.div<{
+  visible: boolean;
+}>`
+  margin-top: -50px;
+  font-size: 12rem;
+  color: black;
+  text-align: center;
+  text-shadow: 4px 4px 5px white;
+  opacity: ${props => (props.visible ? 1 : 0)};
+  transition: opacity 0.3s ease;
+`;
