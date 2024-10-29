@@ -14,11 +14,15 @@ import {
 } from 'constants/ar-constants';
 
 interface DraggableSliderProps {
+  hint: string;
   onAnchorSelect: (anchorIndex: number) => void;
   motion?: any;
 }
 
+const HINT_TIMEOUT = 5000;
+
 const DraggableSlider: React.FC<DraggableSliderProps> = ({
+  hint,
   onAnchorSelect,
   motion,
 }) => {
@@ -28,6 +32,8 @@ const DraggableSlider: React.FC<DraggableSliderProps> = ({
     null
   );
   const sliderRef = useRef<HTMLDivElement>(null);
+  const [sliderHint, setSliderHint] = useState(true);
+  const sliderHintTimeout = useRef(null);
 
   const anchors = [
     {
@@ -49,6 +55,7 @@ const DraggableSlider: React.FC<DraggableSliderProps> = ({
       text: FilterTypeNames[FilterTypes.Rising],
     }, // Bottom-left corner  - Anchor 2
   ];
+  const [anchorHint, setAnchorHint] = useState([true, true, true]);
 
   const handleDrag = (clientX: number, clientY: number) => {
     setUserDrag(true);
@@ -108,6 +115,18 @@ const DraggableSlider: React.FC<DraggableSliderProps> = ({
     );
     setSelectedAnchor(closestAnchorIndex as FilterTypes);
     onAnchorSelect(closestAnchorIndex);
+    // Start the slider hint timeout
+    setSliderHint(false);
+    clearTimeout(sliderHintTimeout.current);
+    sliderHintTimeout.current = setTimeout(() => {
+      setSliderHint(true);
+    }, HINT_TIMEOUT);
+    // Clear anchor hints
+    setAnchorHint(anchorHint =>
+      anchorHint.map((hint, index) =>
+        index === closestAnchorIndex ? false : hint
+      )
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sliderPosition]);
 
@@ -122,7 +141,7 @@ const DraggableSlider: React.FC<DraggableSliderProps> = ({
             selected={index === selectedAnchor}
             icon={anchor.icon}
             hint={anchor.text}
-            isHintVisible={selectedAnchor === null}
+            isHintVisible={anchorHint[index]}
           />
         ))}
         <Styled.Slider
@@ -133,6 +152,7 @@ const DraggableSlider: React.FC<DraggableSliderProps> = ({
           onTouchStart={handleTouchStart}
         >
           <Styled.Icon src={SPRITES.ZodiacIcon} alt="Slider Icon" />
+          <Styled.Text visible={sliderHint}>{hint}</Styled.Text>
         </Styled.Slider>
       </Styled.Wrapper>
     </AnimatePresence>

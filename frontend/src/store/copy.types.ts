@@ -75,6 +75,7 @@ export interface ARPageCopy {
   title: string;
   body: string;
   cta: string;
+  sliderHint: string;
 }
 
 export interface AboutPageCopy {
